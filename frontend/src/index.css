@@ -1,0 +1,68 @@
+/* Global styles for the authentication app */
+
+:root {
+  /* Color theme variables */
+  --primary-dark: #282769;
+  --primary-light: #eeeeee;
+  --accent-red: #e51b00;
+  --white: #ffffff;
+  /* --yellow-bg: linear-gradient(135deg, #ffeb3b 0%, #ffc107 100%); */
+  /* background-image: url('../assets/bg_logo.jpg');
+  background-repeat: repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity:0.2; */
+  /* Font settings */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  
+  color-scheme: light;
+  color: #333;
+  background: var(--yellow-bg);
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--yellow-bg);
+}
+
+#root {
+  min-height: 100vh;
+  background: var(--yellow-bg);
+}
+
+/* Remove default styles */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+input, select, textarea {
+  border: none;
+  outline: none;
+  background: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+} 
