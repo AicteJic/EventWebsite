@@ -3,7 +3,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './ServiceBooking.css';
 
 const DOMAIN_OPTIONS = [
   'IP Consultancy',
@@ -12,8 +11,8 @@ const DOMAIN_OPTIONS = [
   'Project Review',
   'Custom Services',
 ];
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-const ServiceBooking = () => {
+
+const RequestExpertVisit = () => {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState('');
   const [form, setForm] = useState({
@@ -67,7 +66,7 @@ const ServiceBooking = () => {
     if (attachment) formData.append('attachment', attachment);
     formData.append('description', form.description);
     try {
-      const res = await fetch(`${BACKEND_URL}api/requestforexperts`, {
+      const res = await fetch('/api/requestforexperts', {
         method: 'POST',
         body: formData,
       });
@@ -89,7 +88,7 @@ const ServiceBooking = () => {
   };
 
   return (
-    <div className="service-booking-container" style={{ maxWidth: 500, margin: '0 auto', padding: 24 }}>
+    <div className="request-expert-visit-container" style={{ maxWidth: 500, margin: '0 auto', padding: 24 }}>
       <h2>Request for Expert Visit</h2>
       <form onSubmit={handleSubmit}>
         <label>Date:<br />
@@ -144,4 +143,4 @@ const ServiceBooking = () => {
   );
 };
 
-export default ServiceBooking;
+export default RequestExpertVisit; 

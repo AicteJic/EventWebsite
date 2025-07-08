@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const requestForExpertsRoute = require('./routes/requestforexperts');
+const path = require('path');
 
 // Load environment variables
 dotenv.config();
@@ -16,6 +18,7 @@ app.use(express.json());
 // Serve static files from the images and profile_photo directories
 app.use('/images', express.static('images'));
 app.use('/profile_photo', express.static('profile_photo'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -25,7 +28,7 @@ mongoose.connect(process.env.MONGODB_URI)
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/events',require('./routes/event'))
-app.use('/api/requests', require('./routes/requests'));
+app.use('/api/requestforexperts', requestForExpertsRoute);
 app.use('/api/register', require('./routes/user'));
 app.use('/api/user',require('./routes/user'));
 app.use('/api/sessions', require('./routes/session'));

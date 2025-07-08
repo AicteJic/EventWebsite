@@ -1165,3 +1165,113 @@
     font-size: 0.92rem;
   }
 }
+
+/* Container styling */
+.service-booking-container {
+  max-width: 700px;
+  min-width: 700px;
+  margin: 40px auto;
+  margin-top: 70px;
+  padding: 40px 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  opacity: 0.98;
+}
+
+.service-booking-container h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #2d3748;
+}
+
+.service-booking-container form label {
+  display: block;
+  margin-bottom: 12px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.service-booking-container input[type="text"],
+.service-booking-container input[type="email"],
+.service-booking-container input[type="time"],
+.service-booking-container textarea {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #f9fafb;
+  transition: border 0.2s;
+}
+
+.service-booking-container input[type="text"]:focus,
+.service-booking-container input[type="email"]:focus,
+.service-booking-container input[type="time"]:focus,
+.service-booking-container textarea:focus {
+  border: 1.5px solid #667eea;
+  outline: none;
+  background: #fff;
+}
+
+.service-booking-container input[type="file"] {
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.service-booking-container textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.service-booking-container .react-datepicker-wrapper {
+  width: 100%;
+}
+
+.service-booking-container .react-datepicker__input-container input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #f9fafb;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.service-booking-container input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #667eea;
+}
+
+.service-booking-container button[type="submit"] {
+  width: 100%;
+  padding: 10px 0;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.service-booking-container button[type="submit"]:hover:not(:disabled) {
+  background: #5a67d8;
+}
+
+.service-booking-container button[type="submit"]:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .service-booking-container {
+    padding: 16px 4vw;
+    max-width: 98vw;
+  }
+}

@@ -38,4 +38,14 @@ router.post('/', upload.single('attachment'), async (req, res) => {
   }
 });
 
-module.exports = router;
+// GET /api/requestforexperts
+router.get('/', async (req, res) => {
+  try {
+    const requests = await RequestForExpert.find({}, 'name email mobile domains').sort({ createdAt: -1 });
+    res.json(requests);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = router; 

@@ -44,6 +44,7 @@ const Dashboard = () => {
   const [editingMessageIdx, setEditingMessageIdx] = useState(null);
   const [editedMessage, setEditedMessage] = useState('');
   const [savingMessage, setSavingMessage] = useState(false);
+  const [expertRequests, setExpertRequests] = useState([]);
 
   useEffect(() => {
     if (!user) {
@@ -57,7 +58,7 @@ const Dashboard = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const viewParam = urlParams.get('view');
-    if (viewParam && ['users', 'experts', 'requests', 'logs'].includes(viewParam)) {
+    if (viewParam && ['users', 'experts', 'requests', 'logs', 'requestsforexperts'].includes(viewParam)) {
       setView(viewParam);
     }
   }, [location.search]);
@@ -114,6 +115,16 @@ const Dashboard = () => {
     }
   };
 
+  const fetchExpertRequests = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}api/requestforexperts`);
+      const data = await response.json();
+      setExpertRequests(data);
+    } catch (error) {
+      setExpertRequests([]);
+    }
+  };
+
   useEffect(() => {
     if (userType === 'admin' || userType === 'super_admin') {
       if (view === 'users') {
@@ -124,6 +135,8 @@ const Dashboard = () => {
         fetchRequests();
       } else if (view === 'logs') {
         fetchLogs();
+      } else if (view === 'requestsforexperts') {
+        fetchExpertRequests();
       }
     } else {
       fetchRequests();
@@ -369,6 +382,9 @@ const Dashboard = () => {
               </label>
               <label className={view === 'logs' ? 'selected' : ''}>
                 <input type="radio" name="view" value="logs" checked={view === 'logs'} onChange={() => setView('logs')} /> Logs
+              </label>
+              <label className={view === 'requestsforexperts' ? 'selected' : ''}>
+                <input type="radio" name="view" value="requestsforexperts" checked={view === 'requestsforexperts'} onChange={() => setView('requestsforexperts')} /> Requests for Expert
               </label>
             </div>
           )}
@@ -739,6 +755,35 @@ const Dashboard = () => {
                                 ? Object.entries(log.details).map(([k, v]) => `${k}: ${v}`).join(', ')
                                 : String(log.details)
                             }</td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {view === 'requestsforexperts' && (
+                <div className="expert-requests-table-container">
+                  <h3>Requests for Expert</h3>
+                  <table className="expert-requests-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Domains</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {expertRequests.length === 0 ? (
+                        <tr><td colSpan="4">No requests found.</td></tr>
+                      ) : (
+                        expertRequests.map((req, idx) => (
+                          <tr key={req._id || idx}>
+                            <td>{req.name}</td>
+                            <td>{req.email}</td>
+                            <td>{req.mobile}</td>
+                            <td>{Array.isArray(req.domains) ? req.domains.join(', ') : req.domains}</td>
                           </tr>
                         ))
                       )}
