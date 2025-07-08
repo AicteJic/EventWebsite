@@ -160,7 +160,7 @@ router.put('/:id', upload.single('image'), async (req, res) => {
 // Register a user for an event
 router.put('/:id/register', async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { name, email, mobile, organization } = req.body;
     console.log('Params ID:', req.params.id);
 
     const event = await Event.findById(req.params.id);
@@ -173,32 +173,28 @@ router.put('/:id/register', async (req, res) => {
       return res.status(400).json({ error: 'No available seats' });
     }
 
-    if (event.registeredUsers.includes(userId)) {
-      return res.status(400).json({ error: 'User already registered' });
+    // Check if the email is already registered for this event
+    if (event.registrations.some(reg => reg.email === email)) {
+      return res.status(400).json({ error: 'This email is already registered for the event' });
     }
 
-    // console.log("a");
     event.availableSeats -= 1;
-    // console.log("b");
-    event.registeredUsers.push(userId);
-    // console.log("c");
+    event.registrations.push({ name, email, mobile, organization });
     await event.save();
-    // Log registration
+
+    // Optionally, log registration (remove userId)
     try {
       console.log('Attempting to log event registration...');
       await createLog({
-        userId,
         action: 'event_register',
-        details: { eventId: event._id, eventTitle: event.title }
+        details: { eventId: event._id, eventTitle: event.title, name, email, mobile, organization }
       });
       console.log('Event registration logged.');
     } catch (logErr) {
       console.error('Failed to log event registration:', logErr);
     }
 
-    // console.log("d");
-
-    res.status(200).json({ message: 'User registered successfully', event });
+    res.status(200).json({ message: 'Registered successfully', event });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -207,45 +203,30 @@ router.put('/:id/register', async (req, res) => {
 // Cancel a user's registration for an event
 router.put('/:id/cancel-register', async (req, res) => {
   try {
-    const { userId } = req.body;
-    console.log(userId);
+    const { email } = req.body;
     const event = await Event.findById(req.params.id);
-    console.log(req.params.id);
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
     }
-    console.log("1");
-    if (!event.registeredUsers.includes(userId)) {
-      return res.status(400).json({ error: 'User not registered for this event' });
+    // Find registration by email
+    const registrationIndex = event.registrations.findIndex(reg => reg.email === email);
+    if (registrationIndex === -1) {
+      return res.status(400).json({ error: 'No registration found for this email' });
     }
-    console.log("2");
-    console.log("a");
+    // Remove registration and increment availableSeats
+    event.registrations.splice(registrationIndex, 1);
     event.availableSeats += 1;
-    console.log("b");
-    event.registeredUsers = event.registeredUsers.filter(
-      (id) => String(id) !== String(userId)
-    );
-    
-    console.log("c");
     await event.save();
-    // Log cancellation
+    // Optionally, log cancellation
     try {
-      console.log('Attempting to log event cancellation...');
       await createLog({
-        userId,
         action: 'event_cancel_registration',
-        details: { eventId: event._id, eventTitle: event.title }
+        details: { eventId: event._id, eventTitle: event.title, email }
       });
-      console.log('Event cancellation logged.');
     } catch (logErr) {
       console.error('Failed to log event cancellation:', logErr);
     }
-    await User.findByIdAndUpdate(
-      userId,
-      { $pull: { events: new mongoose.Types.ObjectId(req.params.id) } }
-    );
-    console.log("f");
-    res.status(200).json({ message: 'User registration canceled successfully', event });
+    res.status(200).json({ message: 'Registration canceled successfully', event });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

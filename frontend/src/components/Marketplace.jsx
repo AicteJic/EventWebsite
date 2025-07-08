@@ -149,84 +149,74 @@ const Marketplace = () => {
     }
   };
 
-  const registerForEvent = async (props) => {
-    console.log("event object here : ",props.event);
-    console.log("event object here : ",props.event._id);
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (!isLoggedIn) {
-      toast.error("please log in first");
-      navigate('/login');
-      return;
-    }
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [registrationDetails, setRegistrationDetails] = useState({ name: '', email: '', mobile: '', organization: '' });
+  const [eventToRegister, setEventToRegister] = useState(null);
 
-    if (props.event.availableSeats <= 0) {
-      // alert('Sorry, this event is full!');
+  const registerForEvent = async (props) => {
+    const { event, details } = props;
+    if (event.availableSeats <= 0) {
       toast.error('Sorry, this event is full!');
       return;
     }
-
     try {
-      // First request: Register the user for the event
-      const registerEventResponse = await fetch(`${BACKEND_URL}api/events/${props.event._id}/register`, {
+      const registerEventResponse = await fetch(`${BACKEND_URL}api/events/${event._id}/register`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({ userId: localStorage.getItem('userId') }),
+        body: JSON.stringify(details),
       });
-      console.log(registerEventResponse);
       if (!registerEventResponse.ok) {
-        throw new Error('Failed to register for the event');
+        const errorData = await registerEventResponse.json().catch(() => ({}));
+        if (errorData.error === 'This email is already registered for the event') {
+          toast.error('Email ID already registered for this event.');
+        } else {
+          throw new Error(errorData.error || 'Failed to register for the event');
+        }
+        return;
       }
-      // Add the event ID to the registrations state and localStorage
       setRegistrations((prevRegistrations) => {
-        const updatedRegistrations = [...prevRegistrations, props.event._id];
+        const updatedRegistrations = [...prevRegistrations, event._id];
         localStorage.setItem('events', JSON.stringify(updatedRegistrations));
         return updatedRegistrations;
       });
-
-      // Second request: Update the user's events in the backend
-      const updateUserResponse = await fetch(`${BACKEND_URL}api/user/event`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ eventId: props.event._id}),
-      });
-
-      if (!updateUserResponse.ok) {
-        throw new Error('Failed to update user events');
-      }
-
-      // alert(`Successfully registered for "${props.event.title}"!`);
-      toast.success(`Successfully registered for "${props.event.title}"!`);
+      toast.success(`Successfully registered for "${event.title}"!`);
     } catch (error) {
       console.error('Error registering for event:', error);
-      // alert('An error occurred while registering for the event. Please try again.');
-      toast.error('An error occurred while registering for the event. Please try again.');
+      toast.error(error.message || 'An error occurred while registering for the event. Please try again.');
     }
   };
 
-  const cancelRegistration = async (eventId) => {
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelEmail, setCancelEmail] = useState('');
+  const [eventToCancel, setEventToCancel] = useState(null);
+
+  const cancelRegistration = async (eventId, email) => {
     try {
       const response = await fetch(`${BACKEND_URL}api/events/${eventId}/cancel-register`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: localStorage.getItem('userId') }),
+        body: JSON.stringify({ email }),
       });
 
       if (response.ok) {
         toast.success('Registration canceled successfully!');
-        // Optionally, refresh the events or registrations list
         setRegistrations(registrations.filter((reg) => reg !== eventId));
+        setEvents((prevEvents) =>
+          prevEvents.map((e) =>
+            e._id === eventId ? { ...e, availableSeats: e.availableSeats + 1 } : e
+          )
+        );
       } else {
-        const errorText = await response.text();
-        console.error('Error canceling registration:', errorText);
-        toast.error('Failed to cancel registration.');
+        const errorData = await response.json().catch(() => ({}));
+        if (errorData.error === 'No registration found for this email') {
+          toast.error('You are not registered for this event.');
+        } else {
+          toast.error('Failed to cancel registration.');
+        }
       }
     } catch (error) {
       console.error('Error canceling registration:', error);
@@ -321,6 +311,58 @@ const Marketplace = () => {
         }}
         onCancel={() => setIsConfirmationOpen(false)}
       />
+      {/* Registration Modal */}
+      {showRegistrationModal && (
+        <Modal
+          isOpen={showRegistrationModal}
+          onRequestClose={() => setShowRegistrationModal(false)}
+          className="modal-content"
+          overlayClassName="modal-overlay"
+          ariaHideApp={false}
+        >
+          <div className="modal-header">
+            <h3>Register for Event</h3>
+          </div>
+          <div className="modal-body">
+            <form onSubmit={e => {
+              e.preventDefault();
+              setShowRegistrationModal(false);
+              registerForEvent({ event: eventToRegister, details: registrationDetails });
+            }}>
+              <label>Name:<input type="text" value={registrationDetails.name} onChange={e => setRegistrationDetails({ ...registrationDetails, name: e.target.value })} required /></label>
+              <label>Email:<input type="email" value={registrationDetails.email} onChange={e => setRegistrationDetails({ ...registrationDetails, email: e.target.value })} required /></label>
+              <label>Mobile:<input type="text" value={registrationDetails.mobile} onChange={e => setRegistrationDetails({ ...registrationDetails, mobile: e.target.value })} required /></label>
+              <label>Organization:<input type="text" value={registrationDetails.organization} onChange={e => setRegistrationDetails({ ...registrationDetails, organization: e.target.value })} required /></label>
+              <button type="submit">Register</button>
+              <button type="button" onClick={() => setShowRegistrationModal(false)}>Cancel</button>
+            </form>
+          </div>
+        </Modal>
+      )}
+      {showCancelModal && (
+        <Modal
+          isOpen={showCancelModal}
+          onRequestClose={() => setShowCancelModal(false)}
+          className="modal-content"
+          overlayClassName="modal-overlay"
+          ariaHideApp={false}
+        >
+          <div className="modal-header">
+            <h3>Cancel Registration</h3>
+          </div>
+          <div className="modal-body">
+            <form onSubmit={e => {
+              e.preventDefault();
+              setShowCancelModal(false);
+              cancelRegistration(eventToCancel._id, cancelEmail);
+            }}>
+              <label>Email used for registration:<input type="email" value={cancelEmail} onChange={e => setCancelEmail(e.target.value)} required /></label>
+              <button type="submit">Cancel Registration</button>
+              <button type="button" onClick={() => setShowCancelModal(false)}>Close</button>
+            </form>
+          </div>
+        </Modal>
+      )}
       <div 
         className="hero-section"
         onMouseEnter={handleHeroMouseEnter}
@@ -452,61 +494,26 @@ const Marketplace = () => {
                     </span>
                   </div>
                   <button 
-                    className={`register-button ${registrations.find(reg => reg === event._id) ? 'registered' : ''}`}
+                    className="register-button"
+                    disabled={event.availableSeats === 0}
                     onClick={() => {
-                      setConfirmBox({
-                        isOpen: true,
-                        title: 'Register for Event',
-                        message: `Are you sure you want to register for "${event.title}"?`,
-                        onConfirm: () => {
-                          registerForEvent({ event });
-                          setEvents((prevEvents) =>
-                            prevEvents.map((e) =>
-                              e._id === event._id
-                                ? { ...e, availableSeats: e.availableSeats - 1 }
-                                : e
-                            )
-                          );
-                          setConfirmBox((prev) => ({ ...prev, isOpen: false }));
-                        },
-                        danger: false
-                      });
+                      setEventToRegister(event);
+                      setRegistrationDetails({ name: '', email: '', mobile: '', organization: '' });
+                      setShowRegistrationModal(true);
                     }}
-                    disabled={event.availableSeats === 0 || registrations.find(reg => reg === event._id)}
                   >
-                    {registrations.find(reg => reg === event._id) 
-                      ? 'Registered ✓' 
-                      : event.availableSeats === 0 
-                      ? 'Event Full' 
-                      : 'Register'
-                    }
+                    {event.availableSeats === 0 ? 'Event Full' : 'Register'}
                   </button>
-                  {registrations.some((reg) => reg === event._id) && (
-                    <button 
-                      onClick={() => {
-                        setConfirmBox({
-                          isOpen: true,
-                          title: 'Cancel Registration',
-                          message: `Are you sure you want to cancel your registration for "${event.title}"?`,
-                          onConfirm: () => {
-                            cancelRegistration(event._id);
-                            setEvents((prevEvents) =>
-                              prevEvents.map((e) =>
-                                e._id === event._id
-                                  ? { ...e, availableSeats: e.availableSeats + 1 }
-                                  : e
-                              )
-                            );
-                            setConfirmBox((prev) => ({ ...prev, isOpen: false }));
-                          },
-                          danger: true
-                        });
-                      }} 
-                      className="cancel-registration-btn"
-                    >
-                      Cancel Registration
-                    </button>
-                  )}
+                  <button 
+                    onClick={() => {
+                      setEventToCancel(event);
+                      setCancelEmail('');
+                      setShowCancelModal(true);
+                    }} 
+                    className="cancel-registration-btn"
+                  >
+                    Cancel Registration
+                  </button>
                 </div>
                 {/* Booked Experts Section */}
                 {event.booked_experts && event.booked_experts.length > 0 && (

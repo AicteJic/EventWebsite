@@ -116,9 +116,9 @@ const NavBar = () => {
         <FaBars size={22} />
       </button>
       <div className={`navbar-links${menuOpen ? ' open' : ''}`}>
-        <Link to="/events" className={`navbar-link${location.pathname === '/events' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Events</Link>
+        <Link to="/events" className={`navbar-link${location.pathname === '/events' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Outreach Events and Acitvities</Link>
         <Link to="/impact" className={`navbar-link${location.pathname === '/impact' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Impact</Link>
-        <Link to="/service-booking" className={`navbar-link${location.pathname === '/service-booking' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Domain Experts</Link>
+        <Link to="/service-booking" className={`navbar-link${location.pathname === '/service-booking' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Request for Expert Visit</Link>
         {isLoggedIn && (
           <Link to="/dashboard" className={`navbar-link${location.pathname === '/dashboard' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Dashboard</Link>
         )}

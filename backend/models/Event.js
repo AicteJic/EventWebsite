@@ -56,6 +56,14 @@ const eventSchema = new mongoose.Schema({
             ref: 'User',
         },
     ],
+    registrations: [
+        {
+            name: String,
+            email: String,
+            mobile: String,
+            organization: String,
+        }
+    ],
     // photo: {
     //     type: String,
     //     required: false,
