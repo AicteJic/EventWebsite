@@ -17,6 +17,11 @@ body {
   min-height: 100vh;
 }
 
+.main-content {
+  min-height: calc(100vh - 200px); /* Adjust based on navbar and footer height */
+  flex: 1;
+}
+
 /* Remove default button and input styles */
 button, input, select {
   font-family: inherit;
