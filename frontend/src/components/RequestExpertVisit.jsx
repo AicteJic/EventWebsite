@@ -91,30 +91,23 @@ const RequestExpertVisit = () => {
     <div className="request-expert-visit-container" style={{ maxWidth: 500, margin: '0 auto', padding: 24 }}>
       <h2>Request for Expert Visit</h2>
       <form onSubmit={handleSubmit}>
-        <label>Date:<br />
-          <DatePicker selected={date} onChange={setDate} dateFormat="yyyy-MM-dd" minDate={new Date()} required placeholderText="Select date" />
-        </label>
-        <br />
-        <label>Time:<br />
-          <input type="time" name="time" value={time} onChange={e => setTime(e.target.value)} required />
+        <label>Institute Name:<br />
+          <input type="text" name="institute" value={form.institute} onChange={handleChange} required />
         </label>
         <br />
         <label>Name:<br />
           <input type="text" name="name" value={form.name} onChange={handleChange} required />
         </label>
         <br />
-        <label>Mobile Number:<br />
-          <input type="text" name="mobile" value={form.mobile} onChange={handleChange} required />
-        </label>
-        <br />
         <label>Email:<br />
           <input type="email" name="email" value={form.email} onChange={handleChange} required />
         </label>
         <br />
-        <label>Institute Name:<br />
-          <input type="text" name="institute" value={form.institute} onChange={handleChange} required />
+        <label>Mobile Number:<br />
+          <input type="text" name="mobile" value={form.mobile} onChange={handleChange} required />
         </label>
-        <br />
+          <br />
+        
         <label>Domain:<br />
           {DOMAIN_OPTIONS.map((domain) => (
             <span key={domain} style={{ display: 'block' }}>
@@ -127,6 +120,14 @@ const RequestExpertVisit = () => {
               /> {domain}
             </span>
           ))}
+        <br />
+        </label>
+        <label>Date:<br />
+          <DatePicker selected={date} onChange={setDate} dateFormat="yyyy-MM-dd" minDate={new Date()} required placeholderText="Select date" />
+        </label>
+        <br />
+        <label>Time:<br />
+          <input type="time" name="time" value={time} onChange={e => setTime(e.target.value)} required />
         </label>
         <br />
         <label>Attachment (optional):<br />
@@ -137,6 +138,16 @@ const RequestExpertVisit = () => {
           <textarea name="description" value={form.description} onChange={handleChange} />
         </label>
         <br />
+        <label style={{ display: 'block', margin: '16px 0' }}>
+          <input
+            type="checkbox"
+            name="costAgreement"
+            checked={form.costAgreement || false}
+            onChange={handleChange}
+            required
+          />{' '}
+          I acknowledge that all costs will be taken care by the institute.
+        </label>
         <button type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit Request'}</button>
       </form>
     </div>

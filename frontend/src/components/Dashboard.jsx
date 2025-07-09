@@ -45,6 +45,13 @@ const Dashboard = () => {
   const [editedMessage, setEditedMessage] = useState('');
   const [savingMessage, setSavingMessage] = useState(false);
   const [expertRequests, setExpertRequests] = useState([]);
+  const [isExpertRequestModalOpen, setIsExpertRequestModalOpen] = useState(false);
+  const [editingExpertRequest, setEditingExpertRequest] = useState(null);
+  const [availableExperts, setAvailableExperts] = useState([]);
+  const [selectedExperts, setSelectedExperts] = useState([]);
+  const [expertSearchTerm, setExpertSearchTerm] = useState('');
+  // Add a state to cache expert details by ID
+  const [expertDetailsCache, setExpertDetailsCache] = useState({});
 
   useEffect(() => {
     if (!user) {
@@ -122,6 +129,21 @@ const Dashboard = () => {
       setExpertRequests(data);
     } catch (error) {
       setExpertRequests([]);
+    }
+  };
+
+  const fetchAvailableExperts = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}api/auth/users?userType=domain_expert`);
+      const data = await response.json();
+      setAvailableExperts(data);
+      
+      // Set predefined domains
+      // setAllDomains(['ip_consultancy', 'company_registration', 'mentoring', 'expert_guidance']); // Removed
+    } catch (error) {
+      console.error('Error fetching experts:', error);
+      setAvailableExperts([]);
+      // setAllDomains(['ip_consultancy', 'company_registration', 'mentoring', 'expert_guidance']); // Removed
     }
   };
 
@@ -273,6 +295,33 @@ const Dashboard = () => {
     }
   };
 
+  const handleExpertRequestAction = async (requestId, action) => {
+    try {
+      if (action === 'edit') {
+        const request = expertRequests.find(req => req._id === requestId);
+        if (request) {
+          setEditingExpertRequest({
+            ...request,
+            date: new Date(request.date).toISOString().split('T')[0]
+          });
+          await fetchAvailableExperts();
+          // Set selectedExperts to assignedExperts (as IDs)
+          setSelectedExperts(
+            Array.isArray(request.assignedExperts)
+              ? request.assignedExperts.map(expert =>
+                  typeof expert === 'object' && expert !== null ? expert._id : expert
+                )
+              : []
+          );
+          setIsExpertRequestModalOpen(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error handling expert request action:', error);
+      toast.error('An error occurred while processing the request');
+    }
+  };
+
   const handleEdit = async (updatedDetails) => {
     try {
       const response = await fetch(`${BACKEND_URL}api/auth/user-details/${user.id}`, {
@@ -320,6 +369,82 @@ const Dashboard = () => {
     navigate('/apply-for-domain-expert');
   };
 
+  const handleExpertRequestInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditingExpertRequest(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleExpertRequestSave = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const updatedData = {
+        ...editingExpertRequest,
+        assignedExperts: selectedExperts // Store multiple selected experts
+      };
+      
+      const response = await fetch(`${BACKEND_URL}api/requestforexperts/${editingExpertRequest._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedData)
+      });
+
+      if (response.ok) {
+        toast.success('Expert request updated successfully');
+        setIsExpertRequestModalOpen(false);
+        setEditingExpertRequest(null);
+        setSelectedExperts([]);
+        fetchExpertRequests();
+      } else {
+        toast.error('Failed to update expert request');
+      }
+    } catch (error) {
+      console.error('Error updating expert request:', error);
+      toast.error('An error occurred while updating the request');
+    }
+  };
+
+  const closeExpertRequestModal = () => {
+    setIsExpertRequestModalOpen(false);
+    setEditingExpertRequest(null);
+    setSelectedExperts([]);
+  };
+
+  const handleExpertSelection = (expertId) => {
+    setSelectedExperts(prev => {
+      if (prev.includes(expertId)) {
+        return prev.filter(id => id !== expertId);
+      } else {
+        return [...prev, expertId];
+      }
+    });
+  };
+
+  const getFilteredExperts = () => {
+    if (!expertSearchTerm.trim()) return availableExperts;
+    const term = expertSearchTerm.trim().toLowerCase();
+    return availableExperts.filter(expert =>
+      (expert.name && expert.name.toLowerCase().includes(term)) ||
+      (expert.email && expert.email.toLowerCase().includes(term)) ||
+      (expert.Domain && expert.Domain.toLowerCase().includes(term))
+    );
+  };
+
+  const getDomainDisplayName = (domain) => {
+    const domainNames = {
+      'ip_consultancy': 'IP Consultancy',
+      'company_registration': 'Company Registration',
+      'mentoring': 'Mentoring',
+      'expert_guidance': 'Expert Guidance'
+    };
+    return domainNames[domain] || domain;
+  };
+
   // Filtered data based on search term
   const filteredUsers = users.filter(
     (user) =>
@@ -342,6 +467,20 @@ const Dashboard = () => {
         Object.values(log.details).some(v => String(v).toLowerCase().includes(search)))
     );
   });
+
+  // Helper to fetch expert details by ID if not already cached (updated to include domain)
+  const fetchExpertDetailsById = async (id) => {
+    if (!id || expertDetailsCache[id]) return;
+    try {
+      const response = await fetch(`${BACKEND_URL}api/auth/user-details/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setExpertDetailsCache(prev => ({ ...prev, [id]: data }));
+      }
+    } catch (error) {
+      // ignore
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -771,19 +910,50 @@ const Dashboard = () => {
                         <th>Name</th>
                         <th>Email</th>
                         <th>Mobile</th>
+                        <th>Organization</th>
                         <th>Domains</th>
+                        <th>Experts Selected</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {expertRequests.length === 0 ? (
-                        <tr><td colSpan="4">No requests found.</td></tr>
+                        <tr><td colSpan="7">No requests found.</td></tr>
                       ) : (
                         expertRequests.map((req, idx) => (
                           <tr key={req._id || idx}>
                             <td>{req.name}</td>
                             <td>{req.email}</td>
                             <td>{req.mobile}</td>
+                            <td>{req.institute}</td>
                             <td>{Array.isArray(req.domains) ? req.domains.join(', ') : req.domains}</td>
+                            <td>
+                              {Array.isArray(req.assignedExperts) && req.assignedExperts.length > 0
+                                ? req.assignedExperts.map(expert => {
+                                    if (typeof expert === 'object' && expert !== null) {
+                                      return `${expert.name || expert.email || expert._id} (${expert.Domain || 'No domain'})`;
+                                    } else if (typeof expert === 'string') {
+                                      // If only ID is present, fetch details and show loading
+                                      fetchExpertDetailsById(expert);
+                                      const details = expertDetailsCache[expert];
+                                      return details
+                                        ? `${details.name || details.email || expert} (${details.Domain || 'No domain'})`
+                                        : 'Loading...';
+                                    } else {
+                                      return '';
+                                    }
+                                  }).join(', ')
+                                : 'None'}
+                            </td>
+                            <td>
+                              <button 
+                                onClick={() => handleExpertRequestAction(req._id, 'edit')} 
+                                className="action-btn edit-btn"
+                                title="Edit Request"
+                              >
+                                ✏️
+                              </button>
+                            </td>
                           </tr>
                         ))
                       )}
@@ -941,6 +1111,154 @@ const Dashboard = () => {
             </label>
             <button onClick={saveChanges}>Save</button>
             <button onClick={closeEditModal}>Cancel</button>
+          </div>
+        </div>
+      )}
+      {isExpertRequestModalOpen && editingExpertRequest && (
+        <div className="modal">
+          <div className="modal-content expert-request-modal">
+            <h3>Edit Expert Request</h3>
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={editingExpertRequest.name || ''}
+                  onChange={handleExpertRequestInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Email:</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={editingExpertRequest.email || ''}
+                  onChange={handleExpertRequestInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Mobile:</label>
+                <input
+                  type="text"
+                  name="mobile"
+                  value={editingExpertRequest.mobile || ''}
+                  onChange={handleExpertRequestInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Institute/Organization:</label>
+                <input
+                  type="text"
+                  name="institute"
+                  value={editingExpertRequest.institute || ''}
+                  onChange={handleExpertRequestInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Date:</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={editingExpertRequest.date || ''}
+                  readOnly
+                  disabled
+                />
+              </div>
+              <div className="form-group">
+                <label>Time:</label>
+                <input
+                  type="time"
+                  name="time"
+                  value={editingExpertRequest.time || ''}
+                  readOnly
+                  disabled
+                />
+              </div>
+              <div className="form-group full-width">
+                <label>Domains (comma-separated):</label>
+                <input
+                  type="text"
+                  name="domains"
+                  value={Array.isArray(editingExpertRequest.domains) ? editingExpertRequest.domains.join(', ') : editingExpertRequest.domains || ''}
+                  onChange={(e) => {
+                    const domains = e.target.value.split(',').map(d => d.trim()).filter(d => d);
+                    setEditingExpertRequest(prev => ({
+                      ...prev,
+                      domains: domains
+                    }));
+                  }}
+                />
+              </div>
+              <div className="form-group full-width">
+                <label>Description:</label>
+                <textarea
+                  name="description"
+                  value={editingExpertRequest.description || ''}
+                  onChange={handleExpertRequestInputChange}
+                  rows="3"
+                />
+              </div>
+              <div className="form-group full-width">
+                <label>Search Experts:</label>
+                <input
+                  type="text"
+                  placeholder="Search by name, email, or domain"
+                  value={expertSearchTerm}
+                  onChange={e => setExpertSearchTerm(e.target.value)}
+                  className="dashboard-search-bar"
+                />
+              </div>
+              <div className="form-group full-width">
+                <label>Assign Experts:</label>
+                <div className="expert-checkboxes">
+                  {getFilteredExperts().length === 0 ? (
+                    <p className="no-experts">No experts found for your search</p>
+                  ) : (
+                    getFilteredExperts().map((expert) => {
+                      // If expert is an ID, fetch details
+                      const expertId = expert._id || expert;
+                      if (!expert.name) fetchExpertDetailsById(expertId);
+                      const details = expertDetailsCache[expertId] || expert;
+                      return (
+                        <label key={expertId} className="expert-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectedExperts.includes(expertId)}
+                            onChange={() => handleExpertSelection(expertId)}
+                          />
+                          <div className="expert-info">
+                            <span className="expert-name">{details.name || details.email || expertId}</span>
+                            <span className="expert-domains">{details.Domain || 'No domain'}</span>
+                          </div>
+                        </label>
+                      );
+                    })
+                  )}
+                </div>
+                {selectedExperts.length > 0 && (
+                  <div className="selected-experts">
+                    <strong>Selected Experts: {selectedExperts.length}</strong>
+                    <ul>
+                      {selectedExperts.map(expertId => {
+                        const details = expertDetailsCache[expertId];
+                        return (
+                          <li key={expertId}>
+                            {details
+                              ? `${details.name || details.email || expertId} (${details.Domain || 'No domain'})`
+                              : 'Loading...'}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button onClick={handleExpertRequestSave} className="save-btn">Save Changes</button>
+              <button onClick={closeExpertRequestModal} className="cancel-btn">Cancel</button>
+            </div>
           </div>
         </div>
       )}

@@ -41,8 +41,35 @@ router.post('/', upload.single('attachment'), async (req, res) => {
 // GET /api/requestforexperts
 router.get('/', async (req, res) => {
   try {
-    const requests = await RequestForExpert.find({}, 'name email mobile domains').sort({ createdAt: -1 });
+    const requests = await RequestForExpert.find({}, 'name email mobile domains institute date time description assignedExpert assignedExperts').sort({ createdAt: -1 });
     res.json(requests);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// PUT /api/requestforexperts/:id
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    
+    // Convert domains string to array if it's a string
+    if (typeof updateData.domains === 'string') {
+      updateData.domains = updateData.domains.split(',').map(d => d.trim()).filter(d => d);
+    }
+    
+    const updatedRequest = await RequestForExpert.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedRequest) {
+      return res.status(404).json({ error: 'Request not found' });
+    }
+    
+    res.json(updatedRequest);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

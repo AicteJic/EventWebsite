@@ -119,19 +119,17 @@ const NavBar = () => {
         <Link to="/events" className={`navbar-link${location.pathname === '/events' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Outreach Events and Acitvities</Link>
         <Link to="/impact" className={`navbar-link${location.pathname === '/impact' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Impact</Link>
         <Link to="/service-booking" className={`navbar-link${location.pathname === '/service-booking' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Request for Expert Visit</Link>
+        <Link to="/facility-access" className={`navbar-link${location.pathname === '/facility-access' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Facility Access</Link>
+        <Link to="/social-media" className={`navbar-link${location.pathname === '/social-media' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Social Media</Link>
+        <Link to="/contact-us" className={`navbar-link${location.pathname === '/contact-us' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Contact Us</Link>
         {isLoggedIn && (
           <Link to="/dashboard" className={`navbar-link${location.pathname === '/dashboard' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Dashboard</Link>
         )}
         {(isLoggedIn && (user?.userType === 'admin' || user?.userType === 'super_admin')) && (
           <Link to="/manage-events" className="navbar-link" onClick={() => setMenuOpen(false)}>Manage Events</Link>
         )}
-        {!isLoggedIn ? (
-          <Link to="/login" className={`navbar-link${location.pathname === '/login' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Login</Link>
-        ) : (
+        {isLoggedIn && (
           <button className="navbar-link logout-btn" onClick={() => { setMenuOpen(false); handleLogout(); }}>Logout</button>
-        )}
-        {!isLoggedIn && (
-          <Link to="/signup" className={`navbar-link${location.pathname === '/signup' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Signup</Link>
         )}
         {isLoggedIn && (
           <div className="profile-icon" onClick={() => { setMenuOpen(false); handleProfileClick(); }}>👤</div>

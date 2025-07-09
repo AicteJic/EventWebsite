@@ -10,6 +10,8 @@ const requestForExpertSchema = new mongoose.Schema({
   domains: [{ type: String, required: true }],
   attachment: { type: String }, // filename if uploaded
   description: { type: String },
+  assignedExpert: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  assignedExperts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('RequestForExpert', requestForExpertSchema); 

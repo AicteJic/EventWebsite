@@ -18,6 +18,9 @@ import CreateSession from './components/CreateSession';
 import Impact from './components/Impact';
 import EventsStats from './components/EventsStats';
 import DomainExpertStats from './components/DomainExpertStats';
+import FacilityAccess from './components/FacilityAccess';
+import SocialMedia from './components/SocialMedia';
+import ContactUs from './components/ContactUs';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -45,6 +48,9 @@ function App() {
             <Route path="/create-event" element={<CreateEvent />} />
             <Route path="/create-session" element={<CreateSession />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/facility-access" element={<FacilityAccess />} />
+            <Route path="/social-media" element={<SocialMedia />} />
+            <Route path="/contact-us" element={<ContactUs />} />
           </Routes>
         </main>
         <Footer />

@@ -393,12 +393,15 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 70%;
   background-color: rgba(40, 39, 105, 0.8); /* Updated to match site theme */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding-top: 200px;    /* Margin from top after navbar */
+  padding-bottom: 30px; /* Padding from below */
+  box-sizing: border-box;
 }
 
 .modal-content {
@@ -1310,4 +1313,292 @@
 }
 .expert-requests-table tr:hover {
   background: #e6e6f7;
+}
+
+/* Expert Request Action Buttons */
+.expert-requests-table .action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.expert-requests-table .action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expert-requests-table .approve-btn {
+  background: #28a745;
+  color: white;
+}
+
+.expert-requests-table .approve-btn:hover {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.expert-requests-table .reject-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.expert-requests-table .reject-btn:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.expert-requests-table .view-btn {
+  background: #17a2b8;
+  color: white;
+}
+
+.expert-requests-table .view-btn:hover {
+  background: #138496;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+}
+
+/* Expert Request Edit Button */
+.expert-requests-table .edit-btn {
+  background: #ffc107;
+  color: #212529;
+}
+
+.expert-requests-table .edit-btn:hover {
+  background: #e0a800;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+}
+
+/* Expert Request Modal */
+.expert-request-modal {
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  margin-top: 80px; /* Move modal down to avoid navbar */
+}
+
+.expert-request-modal h3 {
+  color: #333;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #667eea;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .expert-request-modal {
+    max-width: 95vw;
+    margin: 20px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .save-btn,
+  .cancel-btn {
+    width: 100%;
+  }
+}
+
+/* Domain and Expert Checkboxes */
+.domain-checkboxes,
+.expert-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.domain-checkbox,
+.expert-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.domain-checkbox:hover,
+.expert-checkbox:hover {
+  border-color: #667eea;
+  background: #f8f9ff;
+}
+
+.domain-checkbox input[type="checkbox"],
+.expert-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.expert-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.expert-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.expert-email {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.expert-domains {
+  color: #28a745;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.no-experts {
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.selected-experts {
+  margin-top: 10px;
+  padding: 10px;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 6px;
+  color: #155724;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .domain-checkboxes,
+  .expert-checkboxes {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .domain-checkbox,
+  .expert-checkbox {
+    min-width: auto;
+    width: 100%;
+  }
 }
