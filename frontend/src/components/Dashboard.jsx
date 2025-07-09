@@ -482,6 +482,78 @@ const Dashboard = () => {
     }
   };
 
+  const [isExpertEditModalOpen, setIsExpertEditModalOpen] = useState(false);
+  const [isAddExpertModalOpen, setIsAddExpertModalOpen] = useState(false);
+  const [editingExpert, setEditingExpert] = useState(null);
+  const [addingExpert, setAddingExpert] = useState(false);
+  const [isSubmittingExpert, setIsSubmittingExpert] = useState(false);
+
+  const openExpertEditModal = (expertId) => {
+    setEditingExpert(expertId);
+    setIsExpertEditModalOpen(true);
+  };
+
+  const closeExpertEditModal = () => {
+    setIsExpertEditModalOpen(false);
+    setEditingExpert(null);
+  };
+
+  const openAddExpertModal = () => {
+    setAddingExpert(true);
+    setIsAddExpertModalOpen(true);
+  };
+
+  const closeAddExpertModal = () => {
+    setIsAddExpertModalOpen(false);
+    setAddingExpert(false);
+  };
+
+  const handleExpertEditSave = async () => {
+    if (!editingExpert) return;
+    setIsSubmittingExpert(true);
+    try {
+      const response = await fetch(`${BACKEND_URL}api/auth/user-details/${editingExpert._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingExpert),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success('Expert updated successfully');
+        setIsEditExpertModalOpen(false);
+        fetchUsers('domain_expert');
+      } else {
+        toast.error(data.error || 'Failed to update expert details');
+      }
+    } catch (err) {
+      toast.error('Failed to update expert details');
+    }
+    setIsSubmittingExpert(false);
+  };
+
+  const handleAddExpertSave = async () => {
+    if (!addingExpert) return;
+    setIsSubmittingExpert(true);
+    try {
+      const response = await fetch(`${BACKEND_URL}api/auth/user-details`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(addingExpert),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success('Expert added successfully');
+        setIsAddExpertModalOpen(false);
+        fetchUsers('domain_expert');
+      } else {
+        toast.error(data.error || 'Failed to add expert');
+      }
+    } catch (err) {
+      toast.error('Failed to add expert');
+    }
+    setIsSubmittingExpert(false);
+  };
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-content">
@@ -797,18 +869,35 @@ const Dashboard = () => {
                 <div>
                   <table className="experts-table">
                     <thead>
-                      <tr><th>Name</th><th>Mobile Number</th><th>Email</th></tr>
+                      <tr>
+                        <th>Name</th>
+                        <th>Mobile Number</th>
+                        <th>Email</th>
+                        <th>Domain</th>
+                        <th>Actions</th>
+                      </tr>
                     </thead>
                     <tbody>
-                      {filteredUsers.map((user) => (
-                        <tr key={user._id}>
-                          <td>{user.name}</td>
-                          <td>{user.mobileNumber}</td>
-                          <td>{user.email}</td>
-                        </tr>
-                      ))}
+                      {filteredUsers.map((user) => {
+                        // Fetch domain if not present
+                        const userId = user._id;
+                        if (!user.Domain) fetchExpertDetailsById(userId);
+                        const details = expertDetailsCache[userId] || user;
+                        return (
+                          <tr key={userId}>
+                            <td>{user.name}</td>
+                            <td>{user.mobileNumber}</td>
+                            <td>{user.email}</td>
+                            <td>{details.Domain || 'No domain'}</td>
+                            <td>
+                              <button className="action-btn edit-btn" onClick={() => openExpertEditModal(userId)}>Edit</button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
+                  <button className="add-expert-btn" onClick={openAddExpertModal}>Add Expert</button>
                 </div>
               )}
               {view === 'requests' && (
@@ -1258,6 +1347,194 @@ const Dashboard = () => {
             <div className="modal-actions">
               <button onClick={handleExpertRequestSave} className="save-btn">Save Changes</button>
               <button onClick={closeExpertRequestModal} className="cancel-btn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isExpertEditModalOpen && editingExpert && (
+        <div className="modal">
+          <div className="modal-content expert-edit-modal">
+            <h3>{editingExpert ? 'Edit Expert Details' : 'Add New Expert'}</h3>
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={editingExpert ? editingExpert.name : ''}
+                  onChange={(e) => setEditingExpert(prev => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Email:</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={editingExpert ? editingExpert.email : ''}
+                  onChange={(e) => setEditingExpert(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Mobile Number:</label>
+                <input
+                  type="text"
+                  name="mobileNumber"
+                  value={editingExpert ? editingExpert.mobileNumber : ''}
+                  onChange={(e) => setEditingExpert(prev => ({ ...prev, mobileNumber: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Domain:</label>
+                <input
+                  type="text"
+                  name="Domain"
+                  value={editingExpert ? editingExpert.Domain : ''}
+                  onChange={(e) => setEditingExpert(prev => ({ ...prev, Domain: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Organization:</label>
+                <input
+                  type="text"
+                  name="organization"
+                  value={editingExpert ? editingExpert.organization : ''}
+                  onChange={(e) => setEditingExpert(prev => ({ ...prev, organization: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Role:</label>
+                <input
+                  type="text"
+                  name="role"
+                  value={editingExpert ? editingExpert.role : ''}
+                  onChange={(e) => setEditingExpert(prev => ({ ...prev, role: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Location of Work:</label>
+                <input
+                  type="text"
+                  name="locationOfWork"
+                  value={editingExpert ? editingExpert.locationOfWork : ''}
+                  onChange={(e) => setEditingExpert(prev => ({ ...prev, locationOfWork: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Date of Birth:</label>
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={editingExpert ? editingExpert.dateOfBirth ? new Date(editingExpert.dateOfBirth).toISOString().split('T')[0] : '' : ''}
+                  onChange={(e) => setEditingExpert(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>LinkedIn Profile:</label>
+                <input
+                  type="url"
+                  name="linkedinProfile"
+                  value={editingExpert ? editingExpert.linkedinProfile : ''}
+                  onChange={(e) => setEditingExpert(prev => ({ ...prev, linkedinProfile: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button onClick={handleExpertEditSave} className="save-btn" disabled={isSubmittingExpert}>{editingExpert ? 'Update Expert' : 'Add Expert'}</button>
+              <button onClick={closeExpertEditModal} className="cancel-btn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isAddExpertModalOpen && (
+        <div className="modal">
+          <div className="modal-content expert-edit-modal">
+            <h3>Add New Expert</h3>
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Email:</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Mobile Number:</label>
+                <input
+                  type="text"
+                  name="mobileNumber"
+                  value={''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, mobileNumber: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Domain:</label>
+                <input
+                  type="text"
+                  name="Domain"
+                  value={''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, Domain: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Organization:</label>
+                <input
+                  type="text"
+                  name="organization"
+                  value={''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, organization: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Role:</label>
+                <input
+                  type="text"
+                  name="role"
+                  value={''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, role: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Location of Work:</label>
+                <input
+                  type="text"
+                  name="locationOfWork"
+                  value={''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, locationOfWork: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>Date of Birth:</label>
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label>LinkedIn Profile:</label>
+                <input
+                  type="url"
+                  name="linkedinProfile"
+                  value={''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, linkedinProfile: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button onClick={handleAddExpertSave} className="save-btn" disabled={isSubmittingExpert}>Add Expert</button>
+              <button onClick={closeAddExpertModal} className="cancel-btn">Cancel</button>
             </div>
           </div>
         </div>

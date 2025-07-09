@@ -92,7 +92,7 @@ const Marketplace = () => {
     // Fetch events from the backend
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}api/events/`);
+        const response = await fetch(`${BACKEND_URL}/api/events/`);
         if (!response.ok) {
           throw new Error('Failed to fetch events');
         }
@@ -160,7 +160,7 @@ const Marketplace = () => {
       return;
     }
     try {
-      const registerEventResponse = await fetch(`${BACKEND_URL}api/events/${event._id}/register`, {
+      const registerEventResponse = await fetch(`${BACKEND_URL}/api/events/${event._id}/register`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -194,7 +194,7 @@ const Marketplace = () => {
 
   const cancelRegistration = async (eventId, email) => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/events/${eventId}/cancel-register`, {
+      const response = await fetch(`${BACKEND_URL}/api/events/${eventId}/cancel-register`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

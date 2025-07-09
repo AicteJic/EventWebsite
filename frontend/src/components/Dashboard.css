@@ -997,13 +997,22 @@
 }
 
 .edit-btn {
-  background: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffc107, #ff9800);
+  color: #282769;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 5px;
+  transition: all 0.3s ease;
 }
-
 .edit-btn:hover {
-  background: #0056b3;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #ff9800, #ffc107);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.18);
 }
 
 .view-btn {
@@ -1484,6 +1493,50 @@
   background: #5a6268;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+}
+
+.add-expert-btn {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 20px 0 0 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.08);
+}
+.add-expert-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.18);
+  background: linear-gradient(135deg, #20c997, #28a745);
+}
+.add-expert-btn:disabled, .save-btn:disabled {
+  background: #bdbdbd !important;
+  color: #f5f5f5 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  opacity: 0.7;
+}
+.edit-btn {
+  background: linear-gradient(135deg, #ffc107, #ff9800);
+  color: #282769;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 5px;
+  transition: all 0.3s ease;
+}
+.edit-btn:hover {
+  background: linear-gradient(135deg, #ff9800, #ffc107);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.18);
 }
 
 @media (max-width: 768px) {
