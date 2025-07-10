@@ -126,9 +126,9 @@ const NavBar = () => {
         ) : (
           <>
             <Link to="/events" className={`navbar-link${location.pathname === '/events' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Outreach Events and Acitvities</Link>
-            <Link to="/impact" className={`navbar-link${location.pathname === '/impact' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Impact</Link>
             <Link to="/service-booking" className={`navbar-link${location.pathname === '/service-booking' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Request for Expert Visit</Link>
             <Link to="/facility-access" className={`navbar-link${location.pathname === '/facility-access' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Facility Access</Link>
+            <Link to="/impact" className={`navbar-link${location.pathname === '/impact' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Impact</Link>
             <Link to="/social-media" className={`navbar-link${location.pathname === '/social-media' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Social Media</Link>
             <Link to="/contact-us" className={`navbar-link${location.pathname === '/contact-us' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Contact Us</Link>
             {isLoggedIn && (

@@ -1041,7 +1041,7 @@ const Dashboard = () => {
               )}
               {view === 'requestsforexperts' && (
                 <div className="expert-requests-table-container">
-                  <h3>Requests for Expert</h3>
+                  <h3>Requests for Expert Visit</h3>
                   <table className="expert-requests-table">
                     <thead>
                       <tr>
@@ -1107,6 +1107,7 @@ const Dashboard = () => {
                       <tr>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Phone</th>
                         <th>Subject</th>
                         <th>Message</th>
                         <th>Date</th>
@@ -1116,12 +1117,13 @@ const Dashboard = () => {
                     </thead>
                     <tbody>
                       {messages.length === 0 ? (
-                        <tr><td colSpan="7">No messages found.</td></tr>
+                        <tr><td colSpan="8">No messages found.</td></tr>
                       ) : (
                         messages.map((msg) => (
                           <tr key={msg._id}>
                             <td>{msg.name}</td>
                             <td>{msg.email}</td>
+                            <td>{msg.phone || '-'}</td>
                             <td>{msg.subject}</td>
                             <td>{msg.message}</td>
                             <td>{new Date(msg.createdAt).toLocaleString()}</td>

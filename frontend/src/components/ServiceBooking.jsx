@@ -24,6 +24,7 @@ const ServiceBooking = () => {
     domains: [],
     description: '',
     costAgreement: false,
+    otherDomain: '',
   });
   const [attachment, setAttachment] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -56,7 +57,16 @@ const ServiceBooking = () => {
       toast.error('Please select date and time.');
       return;
     }
-    if (form.domains.length === 0) {
+    let domainsToSend = form.domains;
+    if (domainsToSend.includes('Other')) {
+      if (!form.otherDomain || !form.otherDomain.trim()) {
+        toast.error('Please specify the other domain.');
+        return;
+      }
+      domainsToSend = domainsToSend.filter(d => d !== 'Other');
+      domainsToSend.push(form.otherDomain.trim());
+    }
+    if (domainsToSend.length === 0) {
       toast.error('Please select at least one domain.');
       return;
     }
@@ -68,9 +78,10 @@ const ServiceBooking = () => {
     formData.append('institute', form.institute);
     formData.append('date', date.toISOString());
     formData.append('time', time);
-    form.domains.forEach((d) => formData.append('domains', d));
+    domainsToSend.forEach((d) => formData.append('domains', d));
     if (attachment) formData.append('attachment', attachment);
     formData.append('description', form.description);
+    formData.append('costAgreement', form.costAgreement);
     try {
       const res = await fetch(`${BACKEND_URL}api/requestforexperts`, {
         method: 'POST',
@@ -78,7 +89,7 @@ const ServiceBooking = () => {
       });
       if (res.ok) {
         toast.success('Request submitted successfully!');
-        setForm({ name: '', mobile: '', email: '', institute: '', domains: [], description: '', costAgreement: false });
+        setForm({ name: '', mobile: '', email: '', institute: '', domains: [], description: '', costAgreement: false, otherDomain: '' });
         setDate(null);
         setTime('');
         setAttachment(null);
@@ -97,7 +108,15 @@ const ServiceBooking = () => {
     <div className="service-booking-container" style={{ maxWidth: 500, margin: '0 auto', padding: 24 }}>
       <h2>Request for Expert Visit</h2>
       <form onSubmit={handleSubmit}>
-        <label>Institute Name:<br />
+        <label>Date:<br />
+          <DatePicker selected={date} onChange={setDate} dateFormat="yyyy-MM-dd" minDate={new Date()} required placeholderText="Select date" />
+        </label>
+        <br />
+        <label>Time:<br />
+          <input type="time" name="time" value={time} onChange={e => setTime(e.target.value)} required />
+        </label>
+        <br />
+        <label>Institute/Organization Name:<br />
           <input type="text" name="institute" value={form.institute} onChange={handleChange} required />
         </label>
         <br />
@@ -126,16 +145,28 @@ const ServiceBooking = () => {
               /> {domain}
             </span>
           ))}
+          <span style={{ display: 'block' }}>
+            <input
+              type="checkbox"
+              name="domains"
+              value="Other"
+              checked={form.domains.includes('Other')}
+              onChange={handleChange}
+            /> Other
+          </span>
+          {form.domains.includes('Other') && (
+            <input
+              type="text"
+              name="otherDomain"
+              placeholder="Please specify other domain"
+              value={form.otherDomain || ''}
+              onChange={handleChange}
+              style={{ marginTop: 8, width: '100%' }}
+              required
+            />
+          )}
         <br />
         </label>
-        <label>Date:<br />
-          <DatePicker selected={date} onChange={setDate} dateFormat="yyyy-MM-dd" minDate={new Date()} required placeholderText="Select date" />
-        </label>
-        <br />
-        <label>Time:<br />
-          <input type="time" name="time" value={time} onChange={e => setTime(e.target.value)} required />
-        </label>
-        <br />
         <label>Attachment (optional):<br />
           <input type="file" name="attachment" onChange={handleFileChange} />
         </label>

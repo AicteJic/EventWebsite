@@ -65,8 +65,11 @@ const Login = () => {
       setUser(data.user);
 
       // Redirect based on userType
-      
-      navigate('/events');
+      if (data.user.userType === 'admin' || data.user.userType === 'super_admin') {
+        navigate('/dashboard');
+      } else {
+        navigate('/events');
+      }
       
 
     } catch (err) {

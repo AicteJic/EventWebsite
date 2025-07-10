@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './ContactUs.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -80,14 +82,17 @@ const ContactUs = () => {
         body: JSON.stringify(formData)
       });
       if (response.ok) {
-        alert('Thank you for your message! We will get back to you soon.');
-        setFormData({ name: '', email: '', subject: '', message: '' });
+        toast.success('Your message has been sent to admin, we will reach out soon at provided mail id.', {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 4000,
+        });
+        setFormData({ name: '', email: '', subject: '', message: '', phone: '' });
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to send message.');
+        toast.error(data.error || 'Failed to send message.', { position: toast.POSITION.TOP_CENTER });
       }
     } catch (err) {
-      alert('Failed to send message. Please try again later.');
+      toast.error('Failed to send message. Please try again later.', { position: toast.POSITION.TOP_CENTER });
     }
     setIsSubmitting(false);
   };
@@ -137,7 +142,17 @@ const ContactUs = () => {
                   placeholder="Enter your full name"
                 />
               </div>
-
+              <div className="form-group">
+                <label htmlFor="phone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="Enter your phone number"
+                />
+              </div>
               <div className="form-group">
                 <label htmlFor="email">Email Address *</label>
                 <input
@@ -188,7 +203,7 @@ const ContactUs = () => {
           </div>
         </div>
 
-        <div className="departments-section">
+        {/* <div className="departments-section">
           <h2>Contact by Department</h2>
           <div className="departments-grid">
             {departments.map((dept, index) => (
@@ -224,7 +239,7 @@ const ContactUs = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
