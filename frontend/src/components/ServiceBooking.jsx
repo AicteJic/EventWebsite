@@ -168,7 +168,7 @@ const ServiceBooking = () => {
         <br />
         </label>
         <label>Attachment (optional):<br />
-          <input type="file" name="attachment" onChange={handleFileChange} />
+          <input type="file" name="attachments" onChange={handleFileChange} />
         </label>
         <br />
         <label>Description (optional):<br />

@@ -20,7 +20,7 @@ const upload = multer({ storage: storage });
 
 router.post('/', upload.array('attachments'), async (req, res) => {
   try {
-    const { name, email, subject, message, phone } = req.body;
+    const { name, email, subject, message, phone, description } = req.body;
     if (!name || !email || !subject || !message) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
@@ -37,7 +37,13 @@ router.post('/', upload.array('attachments'), async (req, res) => {
       }));
     }
 
-    const newMessage = new Message({ name, email, subject, message, phone, attachments });
+    // description is optional, only include if provided
+    const messageData = { name, email, subject, message, phone, attachments };
+    if (description) {
+      messageData.description = description;
+    }
+
+    const newMessage = new Message(messageData);
     await newMessage.save();
     res.status(201).json({ message: 'Message sent successfully.' });
   } catch (err) {
