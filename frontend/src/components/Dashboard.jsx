@@ -75,7 +75,7 @@ const Dashboard = () => {
   // Fetch users for admin
   const fetchUsers = async (userType) => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/auth/users?userType=${userType}`);
+      const response = await fetch(`${BACKEND_URL}/api/auth/users?userType=${userType}`);
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -87,12 +87,12 @@ const Dashboard = () => {
   const fetchRequests = async () => {
     try {
       if (userType === 'admin' || userType === 'super_admin') {
-        const response = await fetch(`${BACKEND_URL}api/requests/all-requests`);
+        const response = await fetch(`${BACKEND_URL}/api/requests/all-requests`);
         const data = await response.json();
         setRequests(data);
       } else {
         const id = localStorage.getItem('userId');
-        const response = await fetch(`${BACKEND_URL}api/requests/${id}`);
+        const response = await fetch(`${BACKEND_URL}/api/requests/${id}`);
         const data = await response.json();
         setRequests(data);
       }
@@ -106,7 +106,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const response = await fetch(`${BACKEND_URL}api/logs`, {
+      const response = await fetch(`${BACKEND_URL}/api/logs`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ const Dashboard = () => {
 
   const fetchExpertRequests = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/requestforexperts`);
+      const response = await fetch(`${BACKEND_URL}/api/requestforexperts`);
       const data = await response.json();
       setExpertRequests(data);
     } catch (error) {
@@ -136,7 +136,7 @@ const Dashboard = () => {
 
   const fetchAvailableExperts = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/auth/users?userType=domain_expert`);
+      const response = await fetch(`${BACKEND_URL}/api/auth/users?userType=domain_expert`);
       const data = await response.json();
       setAvailableExperts(data);
       
@@ -151,7 +151,7 @@ const Dashboard = () => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/messages`);
+      const response = await fetch(`${BACKEND_URL}/api/messages`);
       const data = await response.json();
       setMessages(data);
     } catch (error) {
@@ -182,7 +182,7 @@ const Dashboard = () => {
     const fetchUserDetails = async () => {
       try {
         const id = localStorage.getItem('userId');
-        const response = await fetch(`${BACKEND_URL}api/auth/user-details/${id}`);
+        const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${id}`);
         const data = await response.json();
         console.log('User Details:', data);
       } catch (error) {
@@ -203,7 +203,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const response = await fetch(`${BACKEND_URL}api/slots/bookings-for-expert`, {
+      const response = await fetch(`${BACKEND_URL}/api/slots/bookings-for-expert`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -232,7 +232,7 @@ const Dashboard = () => {
         userEmail: user.email,
         requested_user_type: 'service_provider',
       };
-      const response = await fetch(`${BACKEND_URL}api/requests/${user.id}` , {
+      const response = await fetch(`${BACKEND_URL}/api/requests/${user.id}` , {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newRequest),
@@ -250,7 +250,7 @@ const Dashboard = () => {
 
   const deleteRequest = async (id) => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/requests/${id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/requests/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -267,7 +267,7 @@ const Dashboard = () => {
 
   const handleAccept = async (requestId, userId) => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/requests/${requestId}/status`, {
+      const response = await fetch(`${BACKEND_URL}/api/requests/${requestId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -289,7 +289,7 @@ const Dashboard = () => {
 
   const handleReject = async (requestId) => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/requests/${requestId}/status`, {
+      const response = await fetch(`${BACKEND_URL}/api/requests/${requestId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -338,7 +338,7 @@ const Dashboard = () => {
 
   const handleEdit = async (updatedDetails) => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/auth/user-details/${user.id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedDetails),
@@ -399,7 +399,7 @@ const Dashboard = () => {
         assignedExperts: selectedExperts // Store multiple selected experts
       };
       
-      const response = await fetch(`${BACKEND_URL}api/requestforexperts/${editingExpertRequest._id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/requestforexperts/${editingExpertRequest._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -486,7 +486,7 @@ const Dashboard = () => {
   const fetchExpertDetailsById = async (id) => {
     if (!id || expertDetailsCache[id]) return;
     try {
-      const response = await fetch(`${BACKEND_URL}api/auth/user-details/${id}`);
+      const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${id}`);
       if (response.ok) {
         const data = await response.json();
         setExpertDetailsCache(prev => ({ ...prev, [id]: data }));
@@ -526,7 +526,7 @@ const Dashboard = () => {
     if (!editingExpert) return;
     setIsSubmittingExpert(true);
     try {
-      const response = await fetch(`${BACKEND_URL}api/auth/user-details/${editingExpert._id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${editingExpert._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingExpert),
@@ -549,7 +549,7 @@ const Dashboard = () => {
     if (!addingExpert) return;
     setIsSubmittingExpert(true);
     try {
-      const response = await fetch(`${BACKEND_URL}api/auth/user-details`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/user-details`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(addingExpert),
@@ -583,7 +583,7 @@ const Dashboard = () => {
       return;
     }
     try {
-      const response = await fetch(`${BACKEND_URL}api/messages/${replyModal.messageId}/reply`, {
+      const response = await fetch(`${BACKEND_URL}/api/messages/${replyModal.messageId}/reply`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reply: replyModal.reply })
@@ -733,7 +733,7 @@ const Dashboard = () => {
                                       message: 'Are you sure you want to accept this booking?',
                                       onConfirm: async () => {
                                         const token = localStorage.getItem('token');
-                                        await fetch(`${BACKEND_URL}api/slots/booking-status`, {
+                                        await fetch(`${BACKEND_URL}/api/slots/booking-status`, {
                                           method: 'POST',
                                           headers: {
                                             'Content-Type': 'application/json',
@@ -777,7 +777,7 @@ const Dashboard = () => {
                                       message: 'Are you sure you want to reject this booking?',
                                       onConfirm: async () => {
                                         const token = localStorage.getItem('token');
-                                        await fetch(`${BACKEND_URL}api/slots/booking-status`, {
+                                        await fetch(`${BACKEND_URL}/api/slots/booking-status`, {
                                           method: 'POST',
                                           headers: {
                                             'Content-Type': 'application/json',
@@ -820,7 +820,7 @@ const Dashboard = () => {
                                     setSavingMessage(true);
                                     try {
                                       const token = localStorage.getItem('token');
-                                      const res = await fetch(`${BACKEND_URL}api/slots/edit-message`, {
+                                      const res = await fetch(`${BACKEND_URL}/api/slots/edit-message`, {
                                         method: 'PUT',
                                         headers: {
                                           'Content-Type': 'application/json',
