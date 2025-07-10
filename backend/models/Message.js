@@ -7,6 +7,15 @@ const messageSchema = new mongoose.Schema({
   subject: { type: String, required: true },
   message: { type: String, required: true },
   reply: { type: String, default: '' },
+  attachments: [
+    {
+      filename: String,
+      originalname: String,
+      mimetype: String,
+      path: String,
+      size: Number
+    }
+  ],
   createdAt: { type: Date, default: Date.now }
 });
 
