@@ -641,7 +641,7 @@ const Dashboard = () => {
                 <input type="radio" name="view" value="logs" checked={view === 'logs'} onChange={() => setView('logs')} /> Logs
               </label>
               <label className={view === 'requestsforexperts' ? 'selected' : ''}>
-                <input type="radio" name="view" value="requestsforexperts" checked={view === 'requestsforexperts'} onChange={() => setView('requestsforexperts')} /> Requests for Expert
+                <input type="radio" name="view" value="requestsforexperts" checked={view === 'requestsforexperts'} onChange={() => setView('requestsforexperts')} /> Requests for Expert Visit
               </label>
               <label className={view === 'messages' ? 'selected' : ''}>
                 <input type="radio" name="view" value="messages" checked={view === 'messages'} onChange={() => setView('messages')} /> Messages

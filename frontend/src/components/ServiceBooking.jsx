@@ -83,7 +83,7 @@ const ServiceBooking = () => {
     formData.append('description', form.description);
     formData.append('costAgreement', form.costAgreement);
     try {
-      const res = await fetch(`${BACKEND_URL}api/requestforexperts`, {
+      const res = await fetch(`${BACKEND_URL}/api/requestforexperts`, {
         method: 'POST',
         body: formData,
       });
