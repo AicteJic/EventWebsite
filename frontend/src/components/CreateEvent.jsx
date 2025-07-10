@@ -50,7 +50,7 @@ const CreateEvent = () => {
     // Fetch users from the backend
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}api/auth/users?userType=admin`);
+        const response = await fetch(`${BACKEND_URL}/api/auth/users?userType=admin`);
         const data = await response.json();
         setUsers(data);
       } catch (error) {
@@ -65,7 +65,7 @@ const CreateEvent = () => {
     const fetchDomainExperts = async () => {
       setLoadingExperts(true);
       try {
-        const response = await fetch(`${BACKEND_URL}api/user/domain-experts`);
+        const response = await fetch(`${BACKEND_URL}/api/user/domain-experts`);
         const experts = await response.json();
         setDomainExperts(experts);
       } catch (error) {
@@ -194,7 +194,7 @@ const CreateEvent = () => {
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}api/events`, {
+      const response = await fetch(`${BACKEND_URL}/api/events`, {
         method: 'POST',
         body: formDataToSend,
       });
