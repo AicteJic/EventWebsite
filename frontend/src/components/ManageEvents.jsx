@@ -34,7 +34,7 @@ const ManageEvents = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/events`);
+      const response = await fetch(`${BACKEND_URL}/api/events`);
       const data = await response.json();
       console.log('Fetched events:', data); // Debugging log
       console.log('First event booked_experts:', data[0]?.booked_experts); // Debug booked experts
@@ -50,7 +50,7 @@ const ManageEvents = () => {
       return;
     }
     try {
-      const response = await fetch(`${BACKEND_URL}api/events?title=${searchQuery}`);
+      const response = await fetch(`${BACKEND_URL}/api/events?title=${searchQuery}`);
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
@@ -65,7 +65,7 @@ const ManageEvents = () => {
   const handleDelete = async (eventId) => {
     if (window.confirm('Are you sure you want to delete this event?')) {
       try {
-        const response = await fetch(`${BACKEND_URL}api/events/${eventId}`, {
+        const response = await fetch(`${BACKEND_URL}/api/events/${eventId}`, {
           method: 'DELETE',
         });
         if (response.ok) {
@@ -153,7 +153,7 @@ const ManageEvents = () => {
     }
   
     try {
-      const response = await fetch(`${BACKEND_URL}api/events/${editEvent._id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/events/${editEvent._id}`, {
         method: 'PUT',
         body: formDataToSend,
       });
@@ -178,7 +178,7 @@ const ManageEvents = () => {
 
   const fetchEventRegistrations = async (eventId) => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/events/${eventId}/registrations`);
+      const response = await fetch(`${BACKEND_URL}/api/events/${eventId}/registrations`);
       if (response.ok) {
         const data = await response.json();
         setInfoModal({ isOpen: true, registrations: data, eventId }); // <-- set eventId here
@@ -408,7 +408,7 @@ const ManageEvents = () => {
                 <button
                   onClick={async () => {
                     // Always fetch latest registrations before exporting
-                    const response = await fetch(`${BACKEND_URL}api/events/${event._id}/registrations`);
+                    const response = await fetch(`${BACKEND_URL}/api/events/${event._id}/registrations`);
                     let registrations = [];
                     if (response.ok) {
                       registrations = await response.json();
