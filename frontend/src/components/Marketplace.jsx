@@ -462,6 +462,7 @@ const Marketplace = () => {
             Initiatives by MIC & JIC
           </button>
         </div>
+        {/*
         <div className="category-filters">
           {categories.map(category => (
             <button
@@ -473,6 +474,7 @@ const Marketplace = () => {
             </button>
           ))}
         </div>
+        */}
         
       </div>
       <div className="market-content">
