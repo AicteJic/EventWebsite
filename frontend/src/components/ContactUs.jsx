@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './ContactUs.css';
-import { toast, POSITION } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ContactUs = () => {
@@ -82,17 +82,14 @@ const ContactUs = () => {
         body: JSON.stringify(formData)
       });
       if (response.ok) {
-        toast.success('Your message has been sent to admin, we will reach out soon at provided mail id.', {
-          position: POSITION.TOP_CENTER,
-          autoClose: 4000,
-        });
+        toast.success('Your message has been sent to admin, we will reach out soon at provided mail id.');
         setFormData({ name: '', email: '', subject: '', message: '', phone: '' });
       } else {
         const data = await response.json();
-        toast.error(data.error || 'Failed to send message.', { position: POSITION.TOP_CENTER });
+        toast.error(data.error || 'Failed to send message.');
       }
     } catch (err) {
-      toast.error('Failed to send message. Please try again later.', { position: POSITION.TOP_CENTER });
+      toast.error('Failed to send message. Please try again later.');
     }
     setIsSubmitting(false);
   };
