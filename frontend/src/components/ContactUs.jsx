@@ -74,7 +74,7 @@ const ContactUs = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch(`${BACKEND_URL}api/messages`, {
+      const response = await fetch(`${BACKEND_URL}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

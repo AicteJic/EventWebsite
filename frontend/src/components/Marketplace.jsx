@@ -312,7 +312,7 @@ const Marketplace = () => {
         onCancel={() => setIsConfirmationOpen(false)}
       />
       {/* Registration Modal */}
-      {showRegistrationModal && (
+      {showRegistrationModal && eventToRegister && (
         <Modal
           isOpen={showRegistrationModal}
           onRequestClose={() => setShowRegistrationModal(false)}
@@ -329,10 +329,26 @@ const Marketplace = () => {
               setShowRegistrationModal(false);
               registerForEvent({ event: eventToRegister, details: registrationDetails });
             }}>
-              <label>Name:<input type="text" value={registrationDetails.name} onChange={e => setRegistrationDetails({ ...registrationDetails, name: e.target.value })} required /></label>
-              <label>Email:<input type="email" value={registrationDetails.email} onChange={e => setRegistrationDetails({ ...registrationDetails, email: e.target.value })} required /></label>
-              <label>Mobile:<input type="text" value={registrationDetails.mobile} onChange={e => setRegistrationDetails({ ...registrationDetails, mobile: e.target.value })} required /></label>
-              <label>Organization:<input type="text" value={registrationDetails.organization} onChange={e => setRegistrationDetails({ ...registrationDetails, organization: e.target.value })} required /></label>
+              {(eventToRegister.registrationFormConfig && Array.isArray(eventToRegister.registrationFormConfig) && eventToRegister.registrationFormConfig.length > 0)
+                ? eventToRegister.registrationFormConfig.map(field => (
+                    <label key={field.name}>
+                      {field.label}:
+                      <input
+                        type={field.name === 'email' ? 'email' : 'text'}
+                        value={registrationDetails[field.name] || ''}
+                        onChange={e => setRegistrationDetails({ ...registrationDetails, [field.name]: e.target.value })}
+                        required={field.required}
+                      />
+                    </label>
+                  ))
+                : (
+                  <>
+                    <label>Name:<input type="text" value={registrationDetails.name} onChange={e => setRegistrationDetails({ ...registrationDetails, name: e.target.value })} required /></label>
+                    <label>Email:<input type="email" value={registrationDetails.email} onChange={e => setRegistrationDetails({ ...registrationDetails, email: e.target.value })} required /></label>
+                    <label>Mobile:<input type="text" value={registrationDetails.mobile} onChange={e => setRegistrationDetails({ ...registrationDetails, mobile: e.target.value })} required /></label>
+                    <label>Organization:<input type="text" value={registrationDetails.organization} onChange={e => setRegistrationDetails({ ...registrationDetails, organization: e.target.value })} required /></label>
+                  </>
+                )}
               <button type="submit">Register</button>
               <button type="button" onClick={() => setShowRegistrationModal(false)}>Cancel</button>
             </form>
@@ -496,7 +512,16 @@ const Marketplace = () => {
                     disabled={event.availableSeats === 0}
                     onClick={() => {
                       setEventToRegister(event);
-                      setRegistrationDetails({ name: '', email: '', mobile: '', organization: '' });
+                      // Dynamically initialize registrationDetails based on event config
+                      if (event.registrationFormConfig && Array.isArray(event.registrationFormConfig) && event.registrationFormConfig.length > 0) {
+                        const details = {};
+                        event.registrationFormConfig.forEach(field => {
+                          details[field.name] = '';
+                        });
+                        setRegistrationDetails(details);
+                      } else {
+                        setRegistrationDetails({ name: '', email: '', mobile: '', organization: '' });
+                      }
                       setShowRegistrationModal(true);
                     }}
                   >
