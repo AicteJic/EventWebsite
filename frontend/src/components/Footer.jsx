@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-section">
-          <h3>AICTE Events</h3>
+          <h3>AICTE Indovation Center,Jaipur</h3>
           <p>Empowering education through innovation and collaboration.</p>
         </div>
         <div className="footer-section">
@@ -27,8 +27,8 @@ const Footer = () => {
         </div>
         <div className="footer-section">
           <h4>Contact</h4>
-          <p>Email: info@aicte.gov.in</p>
-          <p>Phone: +91-11-2958 1000</p>
+          <p>Email: admin.jic@aicte-india.org</p>
+          <p>Phone: 0141 282 3250</p>
         </div>
       </div>
       <div className="footer-bottom">

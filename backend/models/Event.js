@@ -81,6 +81,17 @@ const eventSchema = new mongoose.Schema({
         required: false, // Optional array of URLs (e.g., PDF links, resources)
         default: [],
     },
+    type: {
+        type: String,
+        required: false, // Optional, but recommended for event type identification
+        enum: [
+            'Initiatives and programs by JIC',
+            'Cluster program',
+            'Initiatives by MIC and JIC',
+            '' // allow empty for legacy events
+        ],
+        default: ''
+    },
 }, { timestamps: true }); // Add timestamps to track createdAt and updatedAt
 
 module.exports = mongoose.model('Event', eventSchema);

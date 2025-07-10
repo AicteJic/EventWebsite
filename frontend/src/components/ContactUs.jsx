@@ -15,22 +15,25 @@ const ContactUs = () => {
     {
       icon: "📍",
       title: "Address",
-      details: "AICTE Jaipur Innovation Center<br/>Malviya National Institute of Technology<br/>Jaipur, Rajasthan 302017, India"
+      details: {
+        text: "AICTE Indovation Centre, Jaipur VRGC+VH7, Jawahar Nagar, Jaipur, Rajasthan 302007",
+        link: "https://www.google.com/maps/search/?api=1&query=AICTE+Indovation+Centre,+Jaipur+VRGC+VH7,+Jawahar+Nagar,+Jaipur,+Rajasthan+302007"
+      }
     },
     {
       icon: "📞",
       title: "Phone",
-      details: "+91 141 252 9022<br/>+91 141 252 9023<br/>Emergency: +91 98765 43210"
+      details: "+91 141 282 3250"
     },
     {
       icon: "✉️",
       title: "Email",
-      details: "info@aictejaipur.org<br/>support@aictejaipur.org<br/>innovation@aictejaipur.org"
+      details: "admin.jic@aicte-india.org"
     },
     {
       icon: "🕒",
       title: "Working Hours",
-      details: "Monday - Friday: 9:00 AM - 6:00 PM<br/>Saturday: 10:00 AM - 4:00 PM<br/>Sunday: Closed"
+      details: "Monday - Saturday: 9:30 AM - 6:30 PM"
     }
   ];
 
@@ -57,6 +60,8 @@ const ContactUs = () => {
     }
   ];
 
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/';
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -68,18 +73,23 @@ const ContactUs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      alert('Thank you for your message! We will get back to you soon.');
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
+    try {
+      const response = await fetch(`${BACKEND_URL}api/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
       });
-      setIsSubmitting(false);
-    }, 2000);
+      if (response.ok) {
+        alert('Thank you for your message! We will get back to you soon.');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Failed to send message.');
+      }
+    } catch (err) {
+      alert('Failed to send message. Please try again later.');
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -97,10 +107,15 @@ const ContactUs = () => {
               <div key={index} className="contact-info-card">
                 <div className="contact-icon">{info.icon}</div>
                 <h3>{info.title}</h3>
-                <div 
-                  className="contact-details"
-                  dangerouslySetInnerHTML={{ __html: info.details }}
-                />
+                <div className="contact-details">
+                  {info.title === 'Address' ? (
+                    <a href={info.details.link} target="_blank" rel="noopener noreferrer" style={{ color: '#282769', textDecoration: 'underline', fontWeight: 500 }}>
+                      {info.details.text}
+                    </a>
+                  ) : (
+                    info.details
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -194,10 +209,18 @@ const ContactUs = () => {
             <div className="map-placeholder">
               <div className="map-content">
                 <h3>📍 Our Location</h3>
-                <p>AICTE Jaipur Innovation Center</p>
-                <p>Malviya National Institute of Technology</p>
-                <p>Jaipur, Rajasthan 302017, India</p>
-                <button className="directions-btn">Get Directions</button>
+                <p>AICTE Indovation Centre, Jaipur</p>
+                <p>VRGC+VH7, Jawahar Nagar</p>
+                <p>Jaipur, Rajasthan 302007</p>
+                <a
+                  className="directions-btn"
+                  href="https://www.google.com/maps/search/?api=1&query=AICTE+Indovation+Centre,+Jaipur+VRGC+VH7,+Jawahar+Nagar,+Jaipur,+Rajasthan+302007"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-block', textDecoration: 'none' }}
+                >
+                  Get Directions
+                </a>
               </div>
             </div>
           </div>

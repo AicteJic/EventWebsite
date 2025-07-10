@@ -35,6 +35,7 @@ app.use('/api/sessions', require('./routes/session'));
 app.use('/api/slots', require('./routes/slot'));
 app.use('/api/sparc', require('./routes/sparc.js'));
 app.use('/api/logs', require('./routes/logs.js'));
+app.use('/api/messages', require('./routes/messages'));
 app.get('/api/test', (req, res) => {
   res.json({ message: 'URL working' });
 });

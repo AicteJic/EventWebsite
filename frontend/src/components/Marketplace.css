@@ -1001,3 +1001,29 @@
 .modal-content .ReactModal__Close {
   display: none !important;
 }
+
+.event-type-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.event-type-btn {
+  background: #eeeeee;
+  color: #282769;
+  border: 2px solid #282769;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+.event-type-btn:hover,
+.event-type-btn.active {
+  background: #282769;
+  color: #fff;
+  transform: translateY(-2px);
+}

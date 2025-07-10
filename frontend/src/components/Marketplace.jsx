@@ -23,8 +23,10 @@ const Marketplace = () => {
   const [registrations, setRegistrations] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('all');
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [selectedEventType, setSelectedEventType] = useState('all');
+  // Remove filter state and logic
+  // const [filter, setFilter] = useState('all');
+  // const [isFilterVisible, setIsFilterVisible] = useState(false);
   const navigate = useNavigate();
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -139,15 +141,16 @@ const Marketplace = () => {
   //   localStorage.setItem('events', JSON.stringify(registrations));
   // }, [registrations]);
 
-  const toggleFilterVisibility = () => {
-    setIsFilterVisible(!isFilterVisible);
-  };
+  // Remove toggleFilterVisibility and handleScreenClick if only used for filter
+  // const toggleFilterVisibility = () => {
+  //   setIsFilterVisible(!isFilterVisible);
+  // };
 
-  const handleScreenClick = (e) => {
-    if (isFilterVisible) {
-      setIsFilterVisible(false);
-    }
-  };
+  // const handleScreenClick = (e) => {
+  //   if (isFilterVisible) {
+  //     setIsFilterVisible(false);
+  //   }
+  // };
 
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [registrationDetails, setRegistrationDetails] = useState({ name: '', email: '', mobile: '', organization: '' });
@@ -224,19 +227,16 @@ const Marketplace = () => {
     }
   };
 
+  // Remove filteredEvents logic for filter
   const filteredEvents = events.filter(event => {
     const matchesCategory = selectedCategory === 'all' || 
       (Array.isArray(event.category) 
         ? event.category.includes(selectedCategory)
         : event.category === selectedCategory);
+    const matchesEventType = selectedEventType === 'all' || (event.type === selectedEventType);
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchTerm.toLowerCase());
-    if (filter === 'registered') {
-      return registrations.includes(event._id) && matchesCategory && matchesSearch;
-    } else if (filter === 'not_registered') {
-      return !registrations.includes(event._id) && matchesCategory && matchesSearch;
-    }
-    return matchesCategory && matchesSearch; // 'all' filter
+    return matchesCategory && matchesEventType && matchesSearch;
   });
 
   const categories = [
@@ -297,7 +297,7 @@ const Marketplace = () => {
   const [selectedExpert, setSelectedExpert] = useState(null);
 
   return (
-    <div className="marketplace-container" onClick={handleScreenClick}>
+    <div className="marketplace-container" onClick={() => {}}>
       {/* Confirmation Modal */}
       <ConfirmationBox
         isOpen={isConfirmationOpen}
@@ -409,28 +409,7 @@ const Marketplace = () => {
         </div>
       </div>
       
-      {isFilterVisible && (
-        <div className="filter-buttons" onClick={(e) => e.stopPropagation()}>
-          <button
-            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-            onClick={() => setFilter('all')}
-          >
-            All
-          </button>
-          <button
-            className={`filter-btn ${filter === 'registered' ? 'active' : ''}`}
-            onClick={() => setFilter('registered')}
-          >
-            Registered
-          </button>
-          <button
-            className={`filter-btn ${filter === 'not_registered' ? 'active' : ''}`}
-            onClick={() => setFilter('not_registered')}
-          >
-            Not Registered
-          </button>
-        </div>
-      )}
+      {/* Remove filter icon and filter modal in JSX */}
       <div className="filters-section">
         <div className="search-bar">
           <input
@@ -440,13 +419,32 @@ const Marketplace = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
-          <div className="filter-icon" onClick={(e) => { e.stopPropagation(); toggleFilterVisibility(); }}>
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" width="24" height="24" style={{ display: 'block' }}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
-              </svg>
-            </span>
-          </div>
+        </div>
+        <div className="event-type-filters" style={{ marginBottom: 12, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button
+            className={`event-type-btn ${selectedEventType === 'all' ? 'active' : ''}`}
+            onClick={() => setSelectedEventType('all')}
+          >
+            All Types
+          </button>
+          <button
+            className={`event-type-btn ${selectedEventType === 'Initiatives and programs by JIC' ? 'active' : ''}`}
+            onClick={() => setSelectedEventType('Initiatives and programs by JIC')}
+          >
+            Initiatives & Programs By JIC
+          </button>
+          <button
+            className={`event-type-btn ${selectedEventType === 'Cluster program' ? 'active' : ''}`}
+            onClick={() => setSelectedEventType('Cluster program')}
+          >
+            Cluster Program
+          </button>
+          <button
+            className={`event-type-btn ${selectedEventType === 'Initiatives by MIC and JIC' ? 'active' : ''}`}
+            onClick={() => setSelectedEventType('Initiatives by MIC and JIC')}
+          >
+            Initiatives by MIC & JIC
+          </button>
         </div>
         <div className="category-filters">
           {categories.map(category => (

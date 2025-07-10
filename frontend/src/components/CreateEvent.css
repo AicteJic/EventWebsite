@@ -314,7 +314,14 @@
   color: #282769;
   cursor: pointer;
 }
-
+.event-type-radio-group {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 18px 20px 10px 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px rgba(40, 39, 105, 0.04);
+}
 /* Responsive design for category checkboxes */
 @media (max-width: 768px) {
   .category-checkboxes {

@@ -20,6 +20,7 @@ const CreateEvent = () => {
     organizer: '',
     booked_experts: [],
     urls: [''], // Add urls as an array of strings
+    eventType: '', // <-- add eventType
   });
   const [users, setUsers] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
@@ -178,6 +179,10 @@ const CreateEvent = () => {
       console.log(`${pair[0]}: ${pair[1]}`);
     }
 
+    if (formData.eventType) {
+      formDataToSend.append('eventType', formData.eventType);
+    }
+
     try {
       const response = await fetch(`${BACKEND_URL}api/events`, {
         method: 'POST',
@@ -201,6 +206,44 @@ const CreateEvent = () => {
     <div className="create-event-container">
       <h2>Create Event</h2>
       <form onSubmit={handleSubmit} className="create-event-form">
+        <div className="event-type-radio-group">
+          <label style={{ fontWeight: 600, marginBottom: 8 }}>Event Type:</label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <label>
+              <input
+                type="radio"
+                name="eventType"
+                value="Initiatives and programs by JIC"
+                checked={formData.eventType === 'Initiatives and programs by JIC'}
+                onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
+                required
+              />
+              Initiatives and programs by JIC
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="eventType"
+                value="Cluster program"
+                checked={formData.eventType === 'Cluster program'}
+                onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
+                required
+              />
+              Cluster program
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="eventType"
+                value="Initiatives by MIC and JIC"
+                checked={formData.eventType === 'Initiatives by MIC and JIC'}
+                onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
+                required
+              />
+              Initiatives by MIC and JIC
+            </label>
+          </div>
+        </div>
         <label>
           Title:
           <input

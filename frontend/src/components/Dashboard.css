@@ -1296,6 +1296,34 @@
   background-color: #f1f1f1;
 }
 
+.messages-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 24px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(40, 39, 105, 0.08);
+}
+.messages-table th {
+  background: #007bff;
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+}
+.messages-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #282769;
+}
+.messages-table tr:nth-child(even) {
+  background: #f7f7fa;
+}
+.messages-table tr:hover {
+  background: #e6e6f7;
+}
+
 .expert-requests-table {
   width: 100%;
   border-collapse: collapse;

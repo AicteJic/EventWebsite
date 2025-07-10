@@ -110,29 +110,40 @@ const NavBar = () => {
     <nav className="navbar">
       <div className="navbar-left">
         <img src={aicteLogo} alt="AICTE Logo" className="navbar-logo" />
-        <span className="navbar-title">AICTE Jaipur Indovation Center</span>
+        <span className="navbar-title">AICTE Indovation Center, Jaipur</span>
       </div>
       <button className="navbar-toggle" onClick={() => setMenuOpen(m => !m)}>
         <FaBars size={22} />
       </button>
       <div className={`navbar-links${menuOpen ? ' open' : ''}`}>
-        <Link to="/events" className={`navbar-link${location.pathname === '/events' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Outreach Events and Acitvities</Link>
-        <Link to="/impact" className={`navbar-link${location.pathname === '/impact' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Impact</Link>
-        <Link to="/service-booking" className={`navbar-link${location.pathname === '/service-booking' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Request for Expert Visit</Link>
-        <Link to="/facility-access" className={`navbar-link${location.pathname === '/facility-access' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Facility Access</Link>
-        <Link to="/social-media" className={`navbar-link${location.pathname === '/social-media' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Social Media</Link>
-        <Link to="/contact-us" className={`navbar-link${location.pathname === '/contact-us' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Contact Us</Link>
-        {isLoggedIn && (
-          <Link to="/dashboard" className={`navbar-link${location.pathname === '/dashboard' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Dashboard</Link>
-        )}
-        {(isLoggedIn && (user?.userType === 'admin' || user?.userType === 'super_admin')) && (
-          <Link to="/manage-events" className="navbar-link" onClick={() => setMenuOpen(false)}>Manage Events</Link>
-        )}
-        {isLoggedIn && (
-          <button className="navbar-link logout-btn" onClick={() => { setMenuOpen(false); handleLogout(); }}>Logout</button>
-        )}
-        {isLoggedIn && (
-          <div className="profile-icon" onClick={() => { setMenuOpen(false); handleProfileClick(); }}>👤</div>
+        {isLoggedIn && (user?.userType === 'admin' || user?.userType === 'super_admin') ? (
+          <>
+            <Link to="/dashboard" className={`navbar-link${location.pathname === '/dashboard' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Dashboard</Link>
+            <Link to="/manage-events" className="navbar-link" onClick={() => setMenuOpen(false)}>Manage Events</Link>
+            <button className="navbar-link logout-btn" onClick={() => { setMenuOpen(false); handleLogout(); }}>Logout</button>
+            <div className="profile-icon" onClick={() => { setMenuOpen(false); handleProfileClick(); }}>👤</div>
+          </>
+        ) : (
+          <>
+            <Link to="/events" className={`navbar-link${location.pathname === '/events' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Outreach Events and Acitvities</Link>
+            <Link to="/impact" className={`navbar-link${location.pathname === '/impact' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Impact</Link>
+            <Link to="/service-booking" className={`navbar-link${location.pathname === '/service-booking' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Request for Expert Visit</Link>
+            <Link to="/facility-access" className={`navbar-link${location.pathname === '/facility-access' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Facility Access</Link>
+            <Link to="/social-media" className={`navbar-link${location.pathname === '/social-media' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Social Media</Link>
+            <Link to="/contact-us" className={`navbar-link${location.pathname === '/contact-us' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Contact Us</Link>
+            {isLoggedIn && (
+              <Link to="/dashboard" className={`navbar-link${location.pathname === '/dashboard' ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>Dashboard</Link>
+            )}
+            {(isLoggedIn && (user?.userType === 'admin' || user?.userType === 'super_admin')) && (
+              <Link to="/manage-events" className="navbar-link" onClick={() => setMenuOpen(false)}>Manage Events</Link>
+            )}
+            {isLoggedIn && (
+              <button className="navbar-link logout-btn" onClick={() => { setMenuOpen(false); handleLogout(); }}>Logout</button>
+            )}
+            {isLoggedIn && (
+              <div className="profile-icon" onClick={() => { setMenuOpen(false); handleProfileClick(); }}>👤</div>
+            )}
+          </>
         )}
       </div>
 

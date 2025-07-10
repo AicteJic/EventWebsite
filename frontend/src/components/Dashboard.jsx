@@ -52,6 +52,8 @@ const Dashboard = () => {
   const [expertSearchTerm, setExpertSearchTerm] = useState('');
   // Add a state to cache expert details by ID
   const [expertDetailsCache, setExpertDetailsCache] = useState({});
+  const [messages, setMessages] = useState([]);
+  const [replyModal, setReplyModal] = useState({ open: false, messageId: null, reply: '' });
 
   useEffect(() => {
     if (!user) {
@@ -65,7 +67,7 @@ const Dashboard = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const viewParam = urlParams.get('view');
-    if (viewParam && ['users', 'experts', 'requests', 'logs', 'requestsforexperts'].includes(viewParam)) {
+    if (viewParam && ['users', 'experts', 'requests', 'logs', 'requestsforexperts', 'messages'].includes(viewParam)) {
       setView(viewParam);
     }
   }, [location.search]);
@@ -147,6 +149,16 @@ const Dashboard = () => {
     }
   };
 
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}api/messages`);
+      const data = await response.json();
+      setMessages(data);
+    } catch (error) {
+      setMessages([]);
+    }
+  };
+
   useEffect(() => {
     if (userType === 'admin' || userType === 'super_admin') {
       if (view === 'users') {
@@ -159,6 +171,8 @@ const Dashboard = () => {
         fetchLogs();
       } else if (view === 'requestsforexperts') {
         fetchExpertRequests();
+      } else if (view === 'messages') {
+        fetchMessages();
       }
     } else {
       fetchRequests();
@@ -554,6 +568,38 @@ const Dashboard = () => {
     setIsSubmittingExpert(false);
   };
 
+  const handleOpenReplyModal = (msg) => {
+    setReplyModal({ open: true, messageId: msg._id, reply: msg.reply || '' });
+  };
+  const handleCloseReplyModal = () => {
+    setReplyModal({ open: false, messageId: null, reply: '' });
+  };
+  const handleReplyChange = (e) => {
+    setReplyModal((prev) => ({ ...prev, reply: e.target.value }));
+  };
+  const handleReplySubmit = async () => {
+    if (!replyModal.reply.trim()) {
+      toast.error('Reply cannot be empty!');
+      return;
+    }
+    try {
+      const response = await fetch(`${BACKEND_URL}api/messages/${replyModal.messageId}/reply`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reply: replyModal.reply })
+      });
+      if (response.ok) {
+        toast.success('Reply sent!');
+        fetchMessages();
+        handleCloseReplyModal();
+      } else {
+        toast.error('Failed to send reply.');
+      }
+    } catch (err) {
+      toast.error('Failed to send reply.');
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-content">
@@ -596,6 +642,9 @@ const Dashboard = () => {
               </label>
               <label className={view === 'requestsforexperts' ? 'selected' : ''}>
                 <input type="radio" name="view" value="requestsforexperts" checked={view === 'requestsforexperts'} onChange={() => setView('requestsforexperts')} /> Requests for Expert
+              </label>
+              <label className={view === 'messages' ? 'selected' : ''}>
+                <input type="radio" name="view" value="messages" checked={view === 'messages'} onChange={() => setView('messages')} /> Messages
               </label>
             </div>
           )}
@@ -1048,6 +1097,63 @@ const Dashboard = () => {
                       )}
                     </tbody>
                   </table>
+                </div>
+              )}
+              {view === 'messages' && (
+                <div className="messages-table-container">
+                  <h3>Contact Messages</h3>
+                  <table className="messages-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                        <th>Reply</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {messages.length === 0 ? (
+                        <tr><td colSpan="7">No messages found.</td></tr>
+                      ) : (
+                        messages.map((msg) => (
+                          <tr key={msg._id}>
+                            <td>{msg.name}</td>
+                            <td>{msg.email}</td>
+                            <td>{msg.subject}</td>
+                            <td>{msg.message}</td>
+                            <td>{new Date(msg.createdAt).toLocaleString()}</td>
+                            <td>{msg.reply || <span style={{ color: '#aaa' }}>No reply</span>}</td>
+                            <td>
+                              <button className="action-btn edit-btn" onClick={() => handleOpenReplyModal(msg)}>
+                                {msg.reply ? 'Edit/Send Reply' : 'Reply'}
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                  {replyModal.open && (
+                    <div className="modal">
+                      <div className="modal-content">
+                        <h3>Reply to Message</h3>
+                        <textarea
+                          value={replyModal.reply}
+                          onChange={handleReplyChange}
+                          rows={5}
+                          style={{ width: '100%', padding: 10, borderRadius: 6, border: '1px solid #ccc', marginBottom: 16 }}
+                          placeholder="Type your reply here..."
+                        />
+                        <div className="modal-actions">
+                          <button className="save-btn" onClick={handleReplySubmit}>Send Reply</button>
+                          <button className="cancel-btn" onClick={handleCloseReplyModal}>Cancel</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

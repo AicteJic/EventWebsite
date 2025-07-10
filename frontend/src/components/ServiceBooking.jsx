@@ -23,6 +23,7 @@ const ServiceBooking = () => {
     institute: '',
     domains: [],
     description: '',
+    costAgreement: false,
   });
   const [attachment, setAttachment] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -30,12 +31,16 @@ const ServiceBooking = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === 'checkbox') {
-      setForm((prev) => ({
-        ...prev,
-        domains: checked
-          ? [...prev.domains, value]
-          : prev.domains.filter((d) => d !== value),
-      }));
+      if (name === 'domains') {
+        setForm((prev) => ({
+          ...prev,
+          domains: checked
+            ? [...prev.domains, value]
+            : prev.domains.filter((d) => d !== value),
+        }));
+      } else if (name === 'costAgreement') {
+        setForm((prev) => ({ ...prev, costAgreement: checked }));
+      }
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -73,7 +78,7 @@ const ServiceBooking = () => {
       });
       if (res.ok) {
         toast.success('Request submitted successfully!');
-        setForm({ name: '', mobile: '', email: '', institute: '', domains: [], description: '' });
+        setForm({ name: '', mobile: '', email: '', institute: '', domains: [], description: '', costAgreement: false });
         setDate(null);
         setTime('');
         setAttachment(null);
@@ -92,30 +97,23 @@ const ServiceBooking = () => {
     <div className="service-booking-container" style={{ maxWidth: 500, margin: '0 auto', padding: 24 }}>
       <h2>Request for Expert Visit</h2>
       <form onSubmit={handleSubmit}>
-        <label>Date:<br />
-          <DatePicker selected={date} onChange={setDate} dateFormat="yyyy-MM-dd" minDate={new Date()} required placeholderText="Select date" />
+        <label>Institute Name:<br />
+          <input type="text" name="institute" value={form.institute} onChange={handleChange} required />
         </label>
         <br />
-        <label>Time:<br />
-          <input type="time" name="time" value={time} onChange={e => setTime(e.target.value)} required />
-        </label>
-        <br />
-        <label>Name:<br />
+        <label>SPOC Name:<br />
           <input type="text" name="name" value={form.name} onChange={handleChange} required />
-        </label>
-        <br />
-        <label>Mobile Number:<br />
-          <input type="text" name="mobile" value={form.mobile} onChange={handleChange} required />
         </label>
         <br />
         <label>Email:<br />
           <input type="email" name="email" value={form.email} onChange={handleChange} required />
         </label>
         <br />
-        <label>Institute Name:<br />
-          <input type="text" name="institute" value={form.institute} onChange={handleChange} required />
+        <label>Mobile Number:<br />
+          <input type="text" name="mobile" value={form.mobile} onChange={handleChange} required />
         </label>
-        <br />
+          <br />
+        
         <label>Domain:<br />
           {DOMAIN_OPTIONS.map((domain) => (
             <span key={domain} style={{ display: 'block' }}>
@@ -128,6 +126,14 @@ const ServiceBooking = () => {
               /> {domain}
             </span>
           ))}
+        <br />
+        </label>
+        <label>Date:<br />
+          <DatePicker selected={date} onChange={setDate} dateFormat="yyyy-MM-dd" minDate={new Date()} required placeholderText="Select date" />
+        </label>
+        <br />
+        <label>Time:<br />
+          <input type="time" name="time" value={time} onChange={e => setTime(e.target.value)} required />
         </label>
         <br />
         <label>Attachment (optional):<br />
@@ -138,6 +144,16 @@ const ServiceBooking = () => {
           <textarea name="description" value={form.description} onChange={handleChange} />
         </label>
         <br />
+        <label style={{ display: 'block', margin: '16px 0' }}>
+          <input
+            type="checkbox"
+            name="costAgreement"
+            checked={form.costAgreement || false}
+            onChange={handleChange}
+            required
+          />{' '}
+          I acknowledge that all costs will be taken care by the institute.
+        </label>
         <button type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit Request'}</button>
       </form>
     </div>
