@@ -3,13 +3,41 @@ const router = express.Router();
 const Message = require('../models/Message');
 
 // POST /api/messages - Create a new contact message
-router.post('/', async (req, res) => {
+const multer = require('multer');
+const path = require('path');
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Make sure this directory exists
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage: storage });
+
+router.post('/', upload.array('attachments'), async (req, res) => {
   try {
     const { name, email, subject, message, phone } = req.body;
     if (!name || !email || !subject || !message) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
-    const newMessage = new Message({ name, email, subject, message, phone });
+
+    // Handle attachments if any
+    let attachments = [];
+    if (req.files && req.files.length > 0) {
+      attachments = req.files.map(file => ({
+        filename: file.filename,
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        path: file.path,
+        size: file.size
+      }));
+    }
+
+    const newMessage = new Message({ name, email, subject, message, phone, attachments });
     await newMessage.save();
     res.status(201).json({ message: 'Message sent successfully.' });
   } catch (err) {
