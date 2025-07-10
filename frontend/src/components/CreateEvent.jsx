@@ -30,6 +30,13 @@ const CreateEvent = () => {
   const [selectedExpert, setSelectedExpert] = useState(null);
   const [containsExperts, setContainsExperts] = useState(false);
   const [expertSearch, setExpertSearch] = useState("");
+  const [registrationFormConfig, setRegistrationFormConfig] = useState([
+    { name: 'name', label: 'Name', required: true },
+    { name: 'email', label: 'Email', required: true },
+    { name: 'mobile', label: 'Mobile', required: true },
+    { name: 'organization', label: 'Organization', required: true },
+  ]);
+  const [showRegFormEditor, setShowRegFormEditor] = useState(false);
 
   // Available categories
   const availableCategories = [
@@ -173,6 +180,9 @@ const CreateEvent = () => {
         formDataToSend.append(key, value);
       }
     });
+
+    // Add registration form config
+    formDataToSend.append('registrationFormConfig', JSON.stringify(registrationFormConfig));
 
     // Debugging: Log all appended values
     for (let pair of formDataToSend.entries()) {
@@ -442,8 +452,70 @@ const CreateEvent = () => {
           ))}
           <button type="button" onClick={handleAddUrl} style={{ marginTop: 4, background: '#eee', border: '1px solid #ccc', borderRadius: 4, padding: '4px 10px', cursor: 'pointer' }}>Add URL</button>
         </label>
+        <button type="button" onClick={() => setShowRegFormEditor(true)} style={{ marginBottom: 16 }}>
+          Edit Registration Form
+        </button>
         <button type="submit">Create Event</button>
       </form>
+      {/* Registration Form Editor Modal */}
+      {showRegFormEditor && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Edit Registration Form</h3>
+            {registrationFormConfig.map((field, idx) => (
+              <div key={field.name + idx} style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <label>Field Name:
+                  <input
+                    type="text"
+                    value={field.name}
+                    onChange={e => {
+                      const newConfig = [...registrationFormConfig];
+                      newConfig[idx].name = e.target.value;
+                      setRegistrationFormConfig(newConfig);
+                    }}
+                    style={{ width: 100 }}
+                    required
+                  />
+                </label>
+                <label>Field Label:
+                  <input
+                    type="text"
+                    value={field.label}
+                    onChange={e => {
+                      const newConfig = [...registrationFormConfig];
+                      newConfig[idx].label = e.target.value;
+                      setRegistrationFormConfig(newConfig);
+                    }}
+                    style={{ width: 120 }}
+                    required
+                  />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={field.required}
+                    onChange={e => {
+                      const newConfig = [...registrationFormConfig];
+                      newConfig[idx].required = e.target.checked;
+                      setRegistrationFormConfig(newConfig);
+                    }}
+                  /> Required
+                </label>
+                {registrationFormConfig.length > 1 && (
+                  <button type="button" onClick={() => {
+                    setRegistrationFormConfig(registrationFormConfig.filter((_, i) => i !== idx));
+                  }} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}>✕</button>
+                )}
+              </div>
+            ))}
+            <button type="button" onClick={() => setRegistrationFormConfig([...registrationFormConfig, { name: '', label: '', required: false }])} style={{ marginBottom: 16 }}>
+              + Add Field
+            </button>
+            <br />
+            <button onClick={() => setShowRegFormEditor(false)}>Done</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

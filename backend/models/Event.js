@@ -58,12 +58,14 @@ const eventSchema = new mongoose.Schema({
     ],
     registrations: [
         {
-            name: String,
-            email: String,
-            mobile: String,
-            organization: String,
+            type: mongoose.Schema.Types.Mixed, // Allow any fields for each registration
+            default: {},
         }
     ],
+    registrationFormConfig: {
+        type: Array, // Store the admin's registration form config for this event
+        default: [],
+    },
     // photo: {
     //     type: String,
     //     required: false,

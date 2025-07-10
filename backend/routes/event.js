@@ -61,6 +61,7 @@ router.post('/', upload.single('image'), async (req, res) => {
           ? req.body.urls
           : [req.body.urls]
         : [],
+      registrationFormConfig: req.body.registrationFormConfig ? JSON.parse(req.body.registrationFormConfig) : [],
     };
 
     const event = new Event(eventData);
@@ -160,40 +161,44 @@ router.put('/:id', upload.single('image'), async (req, res) => {
 // Register a user for an event
 router.put('/:id/register', async (req, res) => {
   try {
-    const { name, email, mobile, organization } = req.body;
-    console.log('Params ID:', req.params.id);
-
     const event = await Event.findById(req.params.id);
-    console.log("event object : ", event);
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
     }
-
     if (event.availableSeats <= 0) {
       return res.status(400).json({ error: 'No available seats' });
     }
-
     // Check if the email is already registered for this event
-    if (event.registrations.some(reg => reg.email === email)) {
+    if (event.registrations.some(reg => reg.email === req.body.email)) {
       return res.status(400).json({ error: 'This email is already registered for the event' });
     }
-
+    // Build registration object dynamically based on event.registrationFormConfig
+    let registration = {};
+    if (Array.isArray(event.registrationFormConfig) && event.registrationFormConfig.length > 0) {
+      event.registrationFormConfig.forEach(field => {
+        registration[field.name] = req.body[field.name] || '';
+      });
+    } else {
+      // fallback to default fields
+      registration = {
+        name: req.body.name,
+        email: req.body.email,
+        mobile: req.body.mobile,
+        organization: req.body.organization,
+      };
+    }
     event.availableSeats -= 1;
-    event.registrations.push({ name, email, mobile, organization });
+    event.registrations.push(registration);
     await event.save();
-
-    // Optionally, log registration (remove userId)
+    // Optionally, log registration
     try {
-      console.log('Attempting to log event registration...');
       await createLog({
         action: 'event_register',
-        details: { eventId: event._id, eventTitle: event.title, name, email, mobile, organization }
+        details: { eventId: event._id, eventTitle: event.title, registration }
       });
-      console.log('Event registration logged.');
     } catch (logErr) {
       console.error('Failed to log event registration:', logErr);
     }
-
     res.status(200).json({ message: 'Registered successfully', event });
   } catch (error) {
     res.status(500).json({ error: error.message });
