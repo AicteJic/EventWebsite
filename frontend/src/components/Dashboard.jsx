@@ -628,15 +628,15 @@ const Dashboard = () => {
 
           {(userType === 'admin' || userType === 'super_admin') && (
             <div className="view-toggle">
-              <label className={view === 'users' ? 'selected' : ''}>
+              {/* <label className={view === 'users' ? 'selected' : ''}>
                 <input type="radio" name="view" value="users" checked={view === 'users'} onChange={() => setView('users')} /> Users
-              </label>
+              </label> */}
               <label className={view === 'experts' ? 'selected' : ''}>
                 <input type="radio" name="view" value="experts" checked={view === 'experts'} onChange={() => setView('experts')} /> Experts
               </label>
-              <label className={view === 'requests' ? 'selected' : ''}>
+              {/* <label className={view === 'requests' ? 'selected' : ''}>
                 <input type="radio" name="view" value="requests" checked={view === 'requests'} onChange={() => setView('requests')} /> Requests
-              </label>
+              </label> */}
               <label className={view === 'logs' ? 'selected' : ''}>
                 <input type="radio" name="view" value="logs" checked={view === 'logs'} onChange={() => setView('logs')} /> Logs
               </label>
@@ -896,6 +896,7 @@ const Dashboard = () => {
           )}
           {(userType === 'admin' || userType === 'super_admin') && (
             <div className="dashboard-content">
+              {/*
               {view === 'users' && (
                 <div>
                   <table className="users-table">
@@ -914,6 +915,7 @@ const Dashboard = () => {
                   </table>
                 </div>
               )}
+              */}
               {view === 'experts' && (
                 <div>
                   <table className="experts-table">
@@ -949,6 +951,7 @@ const Dashboard = () => {
                   <button className="add-expert-btn" onClick={openAddExpertModal}>Add Expert</button>
                 </div>
               )}
+              {/*
               {view === 'requests' && (
                 <div>
                   <table className="requests-table">
@@ -1002,6 +1005,7 @@ const Dashboard = () => {
                   </table>
                 </div>
               )}
+              */}
               {view === 'logs' && (
                 <div>
                   <h3>System Logs</h3>
@@ -1082,6 +1086,13 @@ const Dashboard = () => {
                                     }
                                   }).join(', ')
                                 : 'None'}
+                            </td>
+                            <td>
+                              {req.attachment ? (
+                                <a href={`${BACKEND_URL}/uploads/${req.attachment}`} target="_blank" rel="noopener noreferrer">View Attachment</a>
+                              ) : (
+                                'No Attachment'
+                              )}
                             </td>
                             <td>
                               <button 
