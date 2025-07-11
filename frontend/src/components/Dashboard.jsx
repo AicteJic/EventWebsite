@@ -537,7 +537,7 @@ const Dashboard = () => {
     if (!editingExpert) return;
     setIsSubmittingExpert(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${editingExpert}`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${editingExpert._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingExpert),
@@ -545,7 +545,7 @@ const Dashboard = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success('Expert updated successfully');
-        setIsEditExpertModalOpen(false);
+        setIsExpertEditModalOpen(false);
         fetchUsers('domain_expert');
       } else {
         toast.error(data.error || 'Failed to update expert details');
@@ -932,6 +932,14 @@ const Dashboard = () => {
               */}
               {view === 'experts' && (
                 <div>
+                  <input
+                    type="text"
+                    placeholder="Search experts by name, email, or mobile number"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className="dashboard-search-bar"
+                    style={{ marginBottom: 12, width: '100%', maxWidth: 400 }}
+                  />
                   <button className="add-expert-btn" onClick={openAddExpertModal} style={{ marginBottom: '12px' }}>Add Expert</button>
                   <table className="experts-table">
                     <thead>
