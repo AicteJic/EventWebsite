@@ -502,9 +502,19 @@ const Dashboard = () => {
   const [addingExpert, setAddingExpert] = useState(null);
   const [isSubmittingExpert, setIsSubmittingExpert] = useState(false);
 
-  const openExpertEditModal = (expertId) => {
-    setEditingExpert(expertId);
-    setIsExpertEditModalOpen(true);
+  const openExpertEditModal = async (expertId) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${expertId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setEditingExpert(data);
+        setIsExpertEditModalOpen(true);
+      } else {
+        toast.error('Failed to fetch expert details');
+      }
+    } catch (error) {
+      toast.error('Error fetching expert details');
+    }
   };
 
   const closeExpertEditModal = () => {

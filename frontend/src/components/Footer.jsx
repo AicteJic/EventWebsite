@@ -27,8 +27,12 @@ const Footer = () => {
         </div>
         <div className="footer-section">
           <h4>Contact</h4>
-          <p>Email: indovayion.jaipur@aicte-india.org</p>
-          <p>       admin.jic@aicte-india.org(for facilty booking)</p>
+          <p>
+            Email: <a href="mailto:indovation.jaipur@aicte-india.org">indovation.jaipur@aicte-india.org</a>
+          </p>
+          <p>
+            <a href="mailto:admin.jic@aicte-india.org">admin.jic@aicte-india.org</a> (for facility booking)
+          </p>
           <p>Phone: 0141 282 3250</p>
         </div>
       </div>
