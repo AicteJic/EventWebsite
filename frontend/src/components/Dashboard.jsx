@@ -54,6 +54,7 @@ const Dashboard = () => {
   const [expertDetailsCache, setExpertDetailsCache] = useState({});
   const [messages, setMessages] = useState([]);
   const [replyModal, setReplyModal] = useState({ open: false, messageId: null, reply: '' });
+  const [showAddExpertPassword, setShowAddExpertPassword] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -562,7 +563,10 @@ const Dashboard = () => {
       const response = await fetch(`${BACKEND_URL}/api/auth/user-details`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(addingExpert),
+        body: JSON.stringify({
+          ...addingExpert,
+          password: addingExpert.password // Ensure password is included
+        }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -1659,6 +1663,20 @@ const Dashboard = () => {
                   value={addingExpert?.linkedinProfile || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, linkedinProfile: e.target.value }))}
                 />
+              </div>
+              <div className="form-group">
+                <label>Password:</label>
+                <input
+                  type={showAddExpertPassword ? 'text' : 'password'}
+                  name="password"
+                  value={addingExpert?.password || ''}
+                  onChange={(e) => setAddingExpert(prev => ({ ...prev, password: e.target.value }))}
+                  minLength={6}
+                  required
+                />
+                <button type="button" onClick={() => setShowAddExpertPassword(v => !v)} style={{marginLeft: 8}}>
+                  {showAddExpertPassword ? 'Hide' : 'Show'}
+                </button>
               </div>
             </div>
             <div className="modal-actions">

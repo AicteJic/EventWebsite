@@ -3,6 +3,8 @@ const { check } = require('express-validator');
 const { signup, login, getMe } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 const User = require('../models/User');
+const bcrypt = require('bcryptjs'); // Add at the top if not already present
+const { v4: uuidv4 } = require('uuid'); // Add at the top if not already present
 
 const router = express.Router();
 // const token = user.getSignedJwtToken();
@@ -85,29 +87,28 @@ router.get('/user-details/:userId', async (req, res) => {
   }
 });
 
-// Route to update user details by userId
+// Route to update user details by userId (do not require password, only update if provided)
 router.put('/user-details/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
-    const updates = req.body;
-    
-    console.log('PUT /user-details/:userId - Updating user:', userId);
-    console.log('Update data received:', updates);
-
+    const updates = { ...req.body };
+    if (updates.password) {
+      if (updates.password.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+      }
+      updates.password = await bcrypt.hash(updates.password, 10);
+    } else {
+      delete updates.password; // Don't update password if not provided
+    }
     const user = await User.findByIdAndUpdate(userId, updates, {
       new: true,
       runValidators: true,
     }).select('name email mobileNumber address gender organization role locationOfWork dateOfBirth linkedinProfile userType Domain');
-
     if (!user) {
-      console.log('User not found for ID:', userId);
       return res.status(404).json({ error: 'User not found' });
     }
-
-    console.log('User updated successfully:', user);
     res.status(200).json(user);
   } catch (error) {
-    console.error('Error updating user:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -118,6 +119,7 @@ router.post('/user-details', async (req, res) => {
     const {
       name,
       email,
+      password, // optional for admin
       mobileNumber,
       address,
       gender,
@@ -136,10 +138,18 @@ router.post('/user-details', async (req, res) => {
       return res.status(400).json({ error: 'User with this email already exists' });
     }
 
-    // Create new user (no password by default, you may want to generate or require one)
+    // If no password provided, set a random one (unusable, admin can reset later)
+    let finalPassword = password;
+    if (!finalPassword || finalPassword.length < 6) {
+      finalPassword = uuidv4(); // random string
+    }
+    const hashedPassword = await bcrypt.hash(finalPassword, 10);
+
+    // Create new user
     const newUser = new User({
       name,
       email,
+      password: hashedPassword,
       mobileNumber,
       address,
       gender,
