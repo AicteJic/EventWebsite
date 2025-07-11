@@ -505,8 +505,8 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
   position: relative;
-  min-height: 320px; /* Reduce height */
-  max-height: 370px; /* Reduce height */
+  min-height: 400px; /* Increased height */
+  max-height: 480px; /* Increased height */
   display: flex;
   flex-direction: column;
 }
@@ -528,7 +528,7 @@
 
 .event-image {
   position: relative;
-  height: 120px; /* Reduce image height */
+  height: 200px; /* Increased image height */
   overflow: hidden;
 }
 
@@ -814,11 +814,11 @@
 
   .event-card {
     margin: 0 5px;
-    min-height: 260px;
-    max-height: 320px;
+    min-height: 320px; /* Increased for mobile */
+    max-height: 400px; /* Increased for mobile */
   }
   .event-image {
-    height: 80px;
+    height: 120px; /* Increased for mobile */
   }
   .event-content {
     padding: 10px;

@@ -499,7 +499,7 @@ const Dashboard = () => {
   const [isExpertEditModalOpen, setIsExpertEditModalOpen] = useState(false);
   const [isAddExpertModalOpen, setIsAddExpertModalOpen] = useState(false);
   const [editingExpert, setEditingExpert] = useState(null);
-  const [addingExpert, setAddingExpert] = useState(false);
+  const [addingExpert, setAddingExpert] = useState(null);
   const [isSubmittingExpert, setIsSubmittingExpert] = useState(false);
 
   const openExpertEditModal = (expertId) => {
@@ -513,20 +513,20 @@ const Dashboard = () => {
   };
 
   const openAddExpertModal = () => {
-    setAddingExpert(true);
+    setAddingExpert(null); // Clear previous expert data
     setIsAddExpertModalOpen(true);
   };
 
   const closeAddExpertModal = () => {
     setIsAddExpertModalOpen(false);
-    setAddingExpert(false);
+    setAddingExpert(null);
   };
 
   const handleExpertEditSave = async () => {
     if (!editingExpert) return;
     setIsSubmittingExpert(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${editingExpert._id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${editingExpert}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingExpert),
@@ -918,6 +918,7 @@ const Dashboard = () => {
               */}
               {view === 'experts' && (
                 <div>
+                  <button className="add-expert-btn" onClick={openAddExpertModal} style={{ marginBottom: '12px' }}>Add Expert</button>
                   <table className="experts-table">
                     <thead>
                       <tr>
@@ -948,7 +949,6 @@ const Dashboard = () => {
                       })}
                     </tbody>
                   </table>
-                  <button className="add-expert-btn" onClick={openAddExpertModal}>Add Expert</button>
                 </div>
               )}
               {/*
@@ -1574,7 +1574,7 @@ const Dashboard = () => {
                 <input
                   type="text"
                   name="name"
-                  value={''}
+                  value={addingExpert?.name || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, name: e.target.value }))}
                 />
               </div>
@@ -1583,7 +1583,7 @@ const Dashboard = () => {
                 <input
                   type="email"
                   name="email"
-                  value={''}
+                  value={addingExpert?.email || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, email: e.target.value }))}
                 />
               </div>
@@ -1592,7 +1592,7 @@ const Dashboard = () => {
                 <input
                   type="text"
                   name="mobileNumber"
-                  value={''}
+                  value={addingExpert?.mobileNumber || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, mobileNumber: e.target.value }))}
                 />
               </div>
@@ -1601,7 +1601,7 @@ const Dashboard = () => {
                 <input
                   type="text"
                   name="Domain"
-                  value={''}
+                  value={addingExpert?.Domain || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, Domain: e.target.value }))}
                 />
               </div>
@@ -1610,7 +1610,7 @@ const Dashboard = () => {
                 <input
                   type="text"
                   name="organization"
-                  value={''}
+                  value={addingExpert?.organization || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, organization: e.target.value }))}
                 />
               </div>
@@ -1619,7 +1619,7 @@ const Dashboard = () => {
                 <input
                   type="text"
                   name="role"
-                  value={''}
+                  value={addingExpert?.role || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, role: e.target.value }))}
                 />
               </div>
@@ -1628,7 +1628,7 @@ const Dashboard = () => {
                 <input
                   type="text"
                   name="locationOfWork"
-                  value={''}
+                  value={addingExpert?.locationOfWork || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, locationOfWork: e.target.value }))}
                 />
               </div>
@@ -1637,7 +1637,7 @@ const Dashboard = () => {
                 <input
                   type="date"
                   name="dateOfBirth"
-                  value={''}
+                  value={addingExpert?.dateOfBirth || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, dateOfBirth: e.target.value }))}
                 />
               </div>
@@ -1646,7 +1646,7 @@ const Dashboard = () => {
                 <input
                   type="url"
                   name="linkedinProfile"
-                  value={''}
+                  value={addingExpert?.linkedinProfile || ''}
                   onChange={(e) => setAddingExpert(prev => ({ ...prev, linkedinProfile: e.target.value }))}
                 />
               </div>
