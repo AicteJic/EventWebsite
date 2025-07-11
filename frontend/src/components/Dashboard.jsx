@@ -534,7 +534,7 @@ const Dashboard = () => {
   };
 
   const handleExpertEditSave = async () => {
-    if (!editingExpert) return;
+    if (!editingExpert || !editingExpert._id) return;
     setIsSubmittingExpert(true);
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/user-details/${editingExpert._id}`, {

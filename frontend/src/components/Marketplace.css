@@ -605,6 +605,7 @@
   align-items: center;
   padding-top: 10px;
   border-top: 2px solid #eeeeee;
+  gap: 16px; /* Add gap between buttons */
 }
 
 .seats-section {
