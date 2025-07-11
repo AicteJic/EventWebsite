@@ -146,12 +146,13 @@ router.post('/user-details', async (req, res) => {
       finalPassword = uuidv4(); // random string
     }
     const hashedPassword = await bcrypt.hash(finalPassword, 10);
+    console.log('Creating user with password:', finalPassword, 'Hashed:', hashedPassword);
 
     // Create new user
     const newUser = new User({
       name,
       email,
-      password: hashedPassword,
+      password: hashedPassword, // <--- THIS MUST BE PRESENT
       mobileNumber,
       address,
       gender,
@@ -166,6 +167,7 @@ router.post('/user-details', async (req, res) => {
     await newUser.save();
     res.status(201).json(newUser);
   } catch (error) {
+    console.error('Error creating user:', error);
     res.status(500).json({ error: error.message });
   }
 });
