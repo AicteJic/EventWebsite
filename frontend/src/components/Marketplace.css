@@ -410,13 +410,14 @@
   background: #e51b00;
   color: #ffffff;
   border: none;
-  padding: 10px 20px;
+  padding: 6px 12px; /* Reduced size */
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-size: 0.85rem; /* Smaller font */
 }
 /* Filter Icon and Buttons */
 .filter-icon {
@@ -481,8 +482,14 @@
   margin: 0 auto;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* Changed from 2 to 3 */
   gap: 24px;
+}
+
+@media (max-width: 1000px) {
+  .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 700px) {
@@ -498,6 +505,10 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
   position: relative;
+  min-height: 320px; /* Reduce height */
+  max-height: 370px; /* Reduce height */
+  display: flex;
+  flex-direction: column;
 }
 
 .event-card::before {
@@ -517,7 +528,7 @@
 
 .event-image {
   position: relative;
-  height: 200px;
+  height: 120px; /* Reduce image height */
   overflow: hidden;
 }
 
@@ -546,7 +557,11 @@
 }
 
 .event-content {
-  padding: 25px;
+  padding: 18px; /* Slightly reduced padding */
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .event-title {
@@ -559,9 +574,8 @@
 
 .event-description {
   color: #666;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 20px;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
 }
 
 .event-details {
@@ -589,7 +603,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 20px;
+  padding-top: 10px;
   border-top: 2px solid #eeeeee;
 }
 
@@ -799,19 +813,19 @@
   }
 
   .event-card {
-    margin: 0 10px;
+    margin: 0 5px;
+    min-height: 260px;
+    max-height: 320px;
   }
-
+  .event-image {
+    height: 80px;
+  }
   .event-content {
-    padding: 15px;
+    padding: 10px;
   }
-
-  .event-title {
-    font-size: 1.1rem;
-  }
-
-  .event-description {
-    font-size: 0.9rem;
+  .cancel-registration-btn {
+    padding: 5px 8px;
+    font-size: 0.8rem;
   }
 }
 
