@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const RequestForExpert = require('../models/RequestForExpert');
-
+const { uploadToGoogleDrive } = require('../services/googleDrive');
 // Set up multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -19,7 +19,10 @@ const upload = multer({ storage: storage });
 router.post('/', upload.single('attachment'), async (req, res) => {
   try {
     const { name, mobile, email, institute, date, time, domains, description } = req.body;
-    const attachment = req.file ? req.file.filename : null;
+    let attachmentData = null;
+    if (req.file) {
+      attachmentData = await uploadToGoogleDrive(req.file);
+    }
     const newRequest = new RequestForExpert({
       name,
       mobile,
@@ -28,12 +31,14 @@ router.post('/', upload.single('attachment'), async (req, res) => {
       date,
       time,
       domains: Array.isArray(domains) ? domains : [domains],
-      attachment,
+      attachment: attachmentData ? attachmentData.webViewLink : null,
+      attachmentId: attachmentData ? attachmentData.fileId : null,
       description
     });
     await newRequest.save();
     res.status(201).json({ message: 'Request submitted successfully' });
   } catch (error) {
+    console.error('Error creating request:', error);
     res.status(500).json({ error: error.message });
   }
 });

@@ -9,6 +9,7 @@ const requestForExpertSchema = new mongoose.Schema({
   time: { type: String, required: true },
   domains: [{ type: String, required: true }],
   attachment: { type: String }, // filename if uploaded
+  attachmentId: { type: String }, // Google Drive file ID
   description: { type: String },
   assignedExpert: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   assignedExperts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
