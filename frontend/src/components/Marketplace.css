@@ -418,6 +418,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-size: 0.85rem; /* Smaller font */
+  margin-left: 12px; /* Padding from register button */
 }
 /* Filter Icon and Buttons */
 .filter-icon {
