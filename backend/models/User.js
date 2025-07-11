@@ -83,6 +83,15 @@ const userSchema = new mongoose.Schema({
       ref: 'Event',
     },
   ],
+  // Password reset fields
+  resetPasswordToken: {
+    type: String,
+    required: false
+  },
+  resetPasswordExpires: {
+    type: Date,
+    required: false
+  }
 });
 
 // Hash password before saving

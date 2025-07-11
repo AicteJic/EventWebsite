@@ -5,6 +5,8 @@ const { protect } = require('../middleware/auth');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs'); // Add at the top if not already present
 const { v4: uuidv4 } = require('uuid'); // Add at the top if not already present
+const crypto = require('crypto');
+const nodemailer = require('nodemailer'); // Placeholder, configure as needed
 
 const router = express.Router();
 // const token = user.getSignedJwtToken();
@@ -196,6 +198,68 @@ router.post('/apply-domain-expert', async (req, res) => {
     }
 
     res.status(200).json({ message: 'Application submitted successfully', user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route: POST /forgot-password
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: 'No user with that email' });
+    }
+    // Generate token
+    const token = crypto.randomBytes(32).toString('hex');
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
+    await user.save();
+
+    // Send email (placeholder logic)
+    // Configure your transporter with real credentials
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${token}`;
+    const mailOptions = {
+      to: user.email,
+      from: process.env.EMAIL_USER,
+      subject: 'Password Reset',
+      text: `You requested a password reset. Click the link to set a new password: ${resetUrl}`
+    };
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Password reset email sent' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route: POST /reset-password/:token
+router.post('/reset-password/:token', async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+  try {
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired token' });
+    }
+    if (!password || password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+    }
+    user.password = await bcrypt.hash(password, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+    res.status(200).json({ message: 'Password has been reset' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
