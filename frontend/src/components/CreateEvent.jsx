@@ -221,7 +221,7 @@ const CreateEvent = () => {
         <div className="event-type-radio-group">
           <label style={{ fontWeight: 600, marginBottom: 8 }}>Event Type:</label>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
                 type="radio"
                 name="eventType"
@@ -229,10 +229,11 @@ const CreateEvent = () => {
                 checked={formData.eventType === 'Initiatives and programs by JIC'}
                 onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
                 required
+                style={{ marginRight: 8 }}
               />
-              Initiatives and programs by JIC
+              <span>Initiatives and programs by JIC</span>
             </label>
-            <label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
                 type="radio"
                 name="eventType"
@@ -240,10 +241,11 @@ const CreateEvent = () => {
                 checked={formData.eventType === 'Cluster program'}
                 onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
                 required
+                style={{ marginRight: 8 }}
               />
-              Cluster program
+              <span>Cluster program</span>
             </label>
-            <label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
                 type="radio"
                 name="eventType"
@@ -251,8 +253,9 @@ const CreateEvent = () => {
                 checked={formData.eventType === 'Initiatives by MIC and JIC'}
                 onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
                 required
+                style={{ marginRight: 8 }}
               />
-              Initiatives by MIC and JIC
+              <span>Initiatives by MIC and JIC</span>
             </label>
           </div>
         </div>
