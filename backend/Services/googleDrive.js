@@ -2,8 +2,10 @@ const { google } = require('googleapis');
 const path = require('path');
 const fs = require('fs');
 
+const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+
 const auth = new google.auth.GoogleAuth({
-  keyFile: path.join(__dirname, '../eventwebsite-465606-93e1d6bf3289.json'), // your JSON key filename
+  credentials: serviceAccount,
   scopes: ['https://www.googleapis.com/auth/drive.file'],
 });
 
