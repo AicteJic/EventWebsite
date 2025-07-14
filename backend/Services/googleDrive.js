@@ -2,7 +2,12 @@ const { google } = require('googleapis');
 const path = require('path');
 const fs = require('fs');
 
-const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+let serviceAccount;
+if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) {
+  serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+} else {
+  serviceAccount = require('../eventwebsite-465606-93e1d6bf3289.json');
+}
 
 const auth = new google.auth.GoogleAuth({
   credentials: serviceAccount,
