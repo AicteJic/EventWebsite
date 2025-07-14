@@ -37,6 +37,7 @@ const CreateEvent = () => {
     { name: 'organization', label: 'Organization', required: true },
   ]);
   const [showRegFormEditor, setShowRegFormEditor] = useState(false);
+  const [otherCategory, setOtherCategory] = useState('');
 
   // Available categories
   const availableCategories = [
@@ -383,6 +384,41 @@ const CreateEvent = () => {
                     <label htmlFor={category.value}>{category.label}</label>
                   </div>
                 ))}
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="other-category"
+                    checked={!!otherCategory}
+                    onChange={e => {
+                      if (!e.target.checked) {
+                        setOtherCategory('');
+                        setFormData(prev => ({ ...prev, category: prev.category.filter(cat => cat !== otherCategory) }));
+                      }
+                    }}
+                  />
+                  <label htmlFor="other-category">Others</label>
+                  {otherCategory !== '' && (
+                    <input
+                      type="text"
+                      placeholder="Enter custom category"
+                      value={otherCategory}
+                      onChange={e => {
+                        const value = e.target.value;
+                        setOtherCategory(value);
+                        setFormData(prev => {
+                          let newCategories = prev.category.filter(cat => !availableCategories.some(c => c.value === cat));
+                          if (value && !newCategories.includes(value)) {
+                            newCategories = [...prev.category.filter(cat => availableCategories.some(c => c.value === cat)), value];
+                          } else if (!value) {
+                            newCategories = prev.category.filter(cat => availableCategories.some(c => c.value === cat));
+                          }
+                          return { ...prev, category: newCategories };
+                        });
+                      }}
+                      style={{ marginLeft: 8 }}
+                    />
+                  )}
+                </div>
               </div>
             </label>
         </div>

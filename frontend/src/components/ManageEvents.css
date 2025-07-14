@@ -288,34 +288,39 @@
   background: linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%);
 }
 
-.registrations-table, .events-table {
+.registrations-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: #fff;
   margin-top: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(40, 39, 105, 0.08);
 }
 
-.registrations-table th, .events-table th {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-weight: 600;
-  padding: 12px 8px;
+.registrations-table th {
+  background: linear-gradient(135deg, #282769 0%, #667eea 100%);
+  color: #fff;
+  font-weight: 700;
+  padding: 16px 12px;
+  font-size: 15px;
+  text-align: left;
+  letter-spacing: 0.5px;
   border-bottom: 2px solid #e0e0e0;
 }
 
-.registrations-table td, .events-table td {
+.registrations-table td {
   color: #333;
-  padding: 10px 8px;
+  padding: 14px 12px;
+  font-size: 15px;
   border-bottom: 1px solid #f0f0f0;
 }
 
-.registrations-table tr:nth-child(even), .events-table tr:nth-child(even) {
+.registrations-table tr:nth-child(even) {
   background: #f8f9fa;
 }
 
-.registrations-table tr:hover, .events-table tr:hover {
+.registrations-table tr:hover {
   background: #e6e6fa;
 }
 
