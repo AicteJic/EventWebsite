@@ -99,6 +99,10 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
   border: 1px solid #e0e0e0;
   transition: transform 0.3s, box-shadow 0.3s;
+  min-height: 520px;
+  max-height: 650px;
+  display: flex;
+  flex-direction: column;
 }
 
 .event-card:hover {
