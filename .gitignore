@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Google service account key
+backend/eventwebsite-465606-93e1d6bf3289.json
