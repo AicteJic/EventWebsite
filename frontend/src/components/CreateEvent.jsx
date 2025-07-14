@@ -219,9 +219,9 @@ const CreateEvent = () => {
       <h2>Create Event</h2>
       <form onSubmit={handleSubmit} className="create-event-form">
         <div className="event-type-radio-group">
-          <label style={{ fontWeight: 600, marginBottom: 8 }}>Event Type:</label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <label style={{ fontWeight: 600, marginBottom: 4 }}>Event Type:</label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2 }}>
               <input
                 type="radio"
                 name="eventType"
@@ -229,11 +229,11 @@ const CreateEvent = () => {
                 checked={formData.eventType === 'Initiatives and programs by JIC'}
                 onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
                 required
-                style={{ marginRight: 8 }}
+                style={{ marginRight: 4 }}
               />
               <span>Initiatives and programs by JIC</span>
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2 }}>
               <input
                 type="radio"
                 name="eventType"
@@ -241,11 +241,11 @@ const CreateEvent = () => {
                 checked={formData.eventType === 'Cluster program'}
                 onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
                 required
-                style={{ marginRight: 8 }}
+                style={{ marginRight: 4 }}
               />
               <span>Cluster program</span>
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2 }}>
               <input
                 type="radio"
                 name="eventType"
@@ -253,7 +253,7 @@ const CreateEvent = () => {
                 checked={formData.eventType === 'Initiatives by MIC and JIC'}
                 onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
                 required
-                style={{ marginRight: 8 }}
+                style={{ marginRight: 4 }}
               />
               <span>Initiatives by MIC and JIC</span>
             </label>
