@@ -295,6 +295,8 @@ const Marketplace = () => {
   const [onConfirmHandler, setOnConfirmHandler] = useState(() => () => {});
   const [showExpertModal, setShowExpertModal] = useState(false);
   const [selectedExpert, setSelectedExpert] = useState(null);
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+  const [modalDescription, setModalDescription] = useState('');
 
   return (
     <div className="marketplace-container" onClick={() => {}}>
@@ -378,6 +380,15 @@ const Marketplace = () => {
             </form>
           </div>
         </Modal>
+      )}
+      {showDescriptionModal && (
+        <div className="description-modal-overlay" onClick={() => setShowDescriptionModal(false)}>
+          <div className="description-modal" onClick={e => e.stopPropagation()}>
+            <h3>Event Description</h3>
+            <div style={{ maxHeight: 300, overflowY: 'auto', whiteSpace: 'pre-line' }}>{modalDescription}</div>
+            <button onClick={() => setShowDescriptionModal(false)} style={{ marginTop: 16 }}>Close</button>
+          </div>
+        </div>
       )}
       <div 
         className="hero-section"
@@ -487,7 +498,7 @@ const Marketplace = () => {
               </div>
               <div className="event-content">
                 <h3 className="event-title">{event.title}</h3>
-                <p className="event-description-scroll">{event.description}</p>
+                <p className="event-description-scroll" onClick={() => { setModalDescription(event.description); setShowDescriptionModal(true); }} style={{ cursor: 'pointer' }}>{event.description}</p>
                 <div className="event-details">
                   <div className="event-date">
                     <span className="icon">📅</span>
