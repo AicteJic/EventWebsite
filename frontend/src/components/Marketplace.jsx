@@ -487,7 +487,7 @@ const Marketplace = () => {
               </div>
               <div className="event-content">
                 <h3 className="event-title">{event.title}</h3>
-                <p className="event-description">{event.description}</p>
+                <p className="event-description-scroll">{event.description}</p>
                 <div className="event-details">
                   <div className="event-date">
                     <span className="icon">📅</span>

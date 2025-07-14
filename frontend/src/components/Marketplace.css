@@ -579,6 +579,19 @@
   margin-bottom: 10px;
 }
 
+.event-description-scroll {
+  max-height: 80px;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background: #fafafa;
+  margin-bottom: 8px;
+  font-size: 0.95em;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #fafafa;
+}
+
 .event-details {
   display: flex;
   flex-direction: column;

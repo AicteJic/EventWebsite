@@ -358,7 +358,7 @@ const ManageEvents = () => {
               />
               {console.log(`${event.image}`)}
               <h3>{event.title}</h3>
-              <p><strong>Description:</strong> {event.description}</p>
+              <p><strong>Description:</strong> <span className="event-description-scroll">{event.description}</span></p>
               <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
               <p><strong>Time:</strong> {event.time} - {event.endTime}</p>
               <p><strong>Location:</strong> {event.location}</p>
