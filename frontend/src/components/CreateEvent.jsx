@@ -38,6 +38,7 @@ const CreateEvent = () => {
   ]);
   const [showRegFormEditor, setShowRegFormEditor] = useState(false);
   const [otherCategory, setOtherCategory] = useState('');
+  const [customCategory, setCustomCategory] = useState('');
 
   // Available categories
   const availableCategories = [
@@ -92,7 +93,7 @@ const CreateEvent = () => {
         )
       );
     }
-  }, [domainExperts, formData.category]);
+  }, [domainExperts, formData.category, customCategory]);
 
   // Filtered experts with search
   const displayedExperts = filteredExperts.filter(expert =>
@@ -392,7 +393,8 @@ const CreateEvent = () => {
                     onChange={e => {
                       if (!e.target.checked) {
                         setOtherCategory('');
-                        setFormData(prev => ({ ...prev, category: prev.category.filter(cat => cat !== otherCategory) }));
+                        setCustomCategory('');
+                        setFormData(prev => ({ ...prev, category: prev.category.filter(cat => cat !== otherCategory && cat !== customCategory) }));
                       }
                     }}
                   />
@@ -401,10 +403,11 @@ const CreateEvent = () => {
                     <input
                       type="text"
                       placeholder="Enter custom category"
-                      value={otherCategory}
+                      value={customCategory}
                       onChange={e => {
                         const value = e.target.value;
-                        setOtherCategory(value);
+                        setCustomCategory(value);
+                        setOtherCategory(value); // keep otherCategory in sync
                         setFormData(prev => {
                           let newCategories = prev.category.filter(cat => !availableCategories.some(c => c.value === cat));
                           if (value && !newCategories.includes(value)) {
