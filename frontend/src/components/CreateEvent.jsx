@@ -389,17 +389,19 @@ const CreateEvent = () => {
                   <input
                     type="checkbox"
                     id="other-category"
-                    checked={!!otherCategory}
+                    checked={!!otherCategory || !!customCategory}
                     onChange={e => {
                       if (!e.target.checked) {
                         setOtherCategory('');
                         setCustomCategory('');
                         setFormData(prev => ({ ...prev, category: prev.category.filter(cat => cat !== otherCategory && cat !== customCategory) }));
+                      } else {
+                        setOtherCategory(' '); // trigger input to show
                       }
                     }}
                   />
                   <label htmlFor="other-category">Others</label>
-                  {otherCategory !== '' && (
+                  {(!!otherCategory || !!customCategory) && (
                     <input
                       type="text"
                       placeholder="Enter custom category"
