@@ -441,16 +441,40 @@ const ManageEvents = () => {
           {infoModal.registrations.length > 0 ? (
             <div>
               <p>Total Registrations: {infoModal.registrations.length}</p>
-              {/* <button
-                style={{ marginBottom: 12, background: '#007bff', color: '#fff', border: 'none', borderRadius: 4, padding: '6px 16px', fontWeight: 600, cursor: 'pointer' }}
-                onClick={() => {
-                  const event = events.find(e => e._id === infoModal.eventId);
-                  exportToPDF(event, infoModal.registrations);
-                }}
-              >
-                Export PDF
-              </button> */}
-              <table>
+              <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+                <button
+                  style={{ background: '#667eea', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 16px', fontWeight: 600, cursor: 'pointer' }}
+                  onClick={() => {
+                    const event = events.find(e => e._id === infoModal.eventId);
+                    exportToPDF(event, infoModal.registrations);
+                  }}
+                >
+                  Export as PDF
+                </button>
+                <button
+                  style={{ background: '#28a745', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 16px', fontWeight: 600, cursor: 'pointer' }}
+                  onClick={() => {
+                    // Export as Excel (CSV)
+                    const csvRows = [
+                      ['Name', 'Email', 'Phone Number'],
+                      ...infoModal.registrations.map(r => [r.name, r.email, r.phoneNumber || 'N/A'])
+                    ];
+                    const csvContent = csvRows.map(row => row.map(field => '"' + String(field).replace(/"/g, '""') + '"').join(',')).join('\n');
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'event_registrations.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                  }}
+                >
+                  Export as Excel
+                </button>
+              </div>
+              <table className="registrations-table">
                 <thead>
                   <tr>
                     <th>Name</th>
