@@ -254,18 +254,11 @@ router.delete('/:id', async (req, res) => {
 // Get registrations for an event by ID
 router.get('/:id/registrations', async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id).populate('registeredUsers', 'name email phone');
+    const event = await Event.findById(req.params.id);
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
     }
-
-    const registrations = event.registeredUsers.map(user => ({
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-    }));
-
-    res.status(200).json(registrations);
+    res.status(200).json(event.registrations || []);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
