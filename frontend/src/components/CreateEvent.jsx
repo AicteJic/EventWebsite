@@ -186,13 +186,12 @@ const CreateEvent = () => {
     // Add registration form config
     formDataToSend.append('registrationFormConfig', JSON.stringify(registrationFormConfig));
 
+    // Always send eventType
+    formDataToSend.append('eventType', formData.eventType || '');
+
     // Debugging: Log all appended values
     for (let pair of formDataToSend.entries()) {
       console.log(`${pair[0]}: ${pair[1]}`);
-    }
-
-    if (formData.eventType) {
-      formDataToSend.append('eventType', formData.eventType);
     }
 
     try {
@@ -218,46 +217,20 @@ const CreateEvent = () => {
     <div className="create-event-container">
       <h2>Create Event</h2>
       <form onSubmit={handleSubmit} className="create-event-form">
-        <div className="event-type-radio-group" style={{ maxWidth: '320px', marginBottom: '16px' }}>
+        <div className="event-type-select-group" style={{ maxWidth: '320px', marginBottom: '16px' }}>
           <label style={{ fontWeight: 600, marginBottom: 4, fontSize: '1rem', width: '100%' }}>Event Type:</label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2, fontSize: '0.97rem', width: '100%' }}>
-              <input
-                type="radio"
-                name="eventType"
-                value="Initiatives and programs by JIC"
-                checked={formData.eventType === 'Initiatives and programs by JIC'}
-                onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
-                required
-                style={{ marginRight: 4, width: 16, height: 16 }}
-              />
-              <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Initiatives and programs by JIC</span>
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2, fontSize: '0.97rem', width: '100%' }}>
-              <input
-                type="radio"
-                name="eventType"
-                value="Cluster program"
-                checked={formData.eventType === 'Cluster program'}
-                onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
-                required
-                style={{ marginRight: 4, width: 16, height: 16 }}
-              />
-              <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Cluster program</span>
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2, fontSize: '0.97rem', width: '100%' }}>
-              <input
-                type="radio"
-                name="eventType"
-                value="Initiatives by MIC and JIC"
-                checked={formData.eventType === 'Initiatives by MIC and JIC'}
-                onChange={e => setFormData(prev => ({ ...prev, eventType: e.target.value }))}
-                required
-                style={{ marginRight: 4, width: 16, height: 16 }}
-              />
-              <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Initiatives by MIC and JIC</span>
-            </label>
-          </div>
+          <select
+            name="eventType"
+            value={formData.eventType}
+            onChange={handleInputChange}
+            required
+            style={{ width: '100%', padding: '8px', fontSize: '1rem', borderRadius: '4px', border: '1px solid #ccc' }}
+          >
+            <option value="" disabled>Select event type</option>
+            <option value="Initiatives and programs by JIC">Initiatives and programs by JIC</option>
+            <option value="Cluster program">Cluster program</option>
+            <option value="Initiatives by MIC and JIC">Initiatives by MIC and JIC</option>
+          </select>
         </div>
         <label>
           Title:
