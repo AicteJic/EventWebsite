@@ -544,6 +544,19 @@
   transform: scale(1.05);
 }
 
+.event-type-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #282769;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  z-index: 2;
+}
+
 .event-category {
   position: absolute;
   top: 15px;

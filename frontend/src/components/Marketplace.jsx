@@ -492,7 +492,12 @@ const Marketplace = () => {
         <div className="events-grid">
           {filteredEvents.map(event => (
             <div key={event._id} className="event-card" style={{ display: 'flex', flexDirection: 'row', minHeight: 220 }}>
-              <div className="event-image" style={{ width: 220, minWidth: 180, height: 180, margin: 18, borderRadius: 12, overflow: 'hidden', background: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="event-image" style={{ width: 220, minWidth: 180, height: 180, margin: 18, borderRadius: 12, overflow: 'hidden', background: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                {event.type && (
+                  <div className="event-type-badge" style={{ position: 'absolute', top: 8, left: 8, background: '#282769', color: '#fff', padding: '4px 12px', borderRadius: 8, fontWeight: 600, fontSize: 13, zIndex: 2 }}>
+                    {event.type}
+                  </div>
+                )}
                 <img src={event.image ? event.image : fallBackImage} alt={event.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
               </div>
               <div className="event-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>

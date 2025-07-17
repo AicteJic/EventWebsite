@@ -62,6 +62,7 @@ router.post('/', upload.single('image'), async (req, res) => {
           : [req.body.urls]
         : [],
       registrationFormConfig: req.body.registrationFormConfig ? JSON.parse(req.body.registrationFormConfig) : [],
+      type: req.body.eventType || '', // Store event type from the form
     };
 
     const event = new Event(eventData);
