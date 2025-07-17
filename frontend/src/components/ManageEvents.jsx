@@ -105,10 +105,13 @@ const ManageEvents = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-  
-    const formDataToSend = new FormData(); // ✅ Declare it first
-  
-    // ✅ Only include safe editable fields
+
+    // Always use only IDs for booked_experts
+    const bookedExpertIds = (editEvent.booked_experts || []).map(expert =>
+      typeof expert === 'object' && expert._id ? expert._id : expert
+    );
+
+    const formDataToSend = new FormData();
     const allowedFields = [
       'title',
       'description',
@@ -120,46 +123,36 @@ const ManageEvents = () => {
       'availableSeats',
       'urls',
       'category',
-      'booked_experts',
+      // 'booked_experts', // handled below
       'registeredUsers',
     ];
-  
+
     allowedFields.forEach((field) => {
       if (editEvent[field] !== undefined && editEvent[field] !== null) {
-        formDataToSend.append(field, editEvent[field]);
+        if (field === 'category' && Array.isArray(editEvent[field])) {
+          editEvent[field].forEach(cat => formDataToSend.append('category', cat));
+        } else if (field === 'urls' && Array.isArray(editEvent[field])) {
+          editEvent[field].filter(Boolean).forEach(url => formDataToSend.append('urls', url));
+        } else if (Array.isArray(editEvent[field])) {
+          editEvent[field].forEach(val => formDataToSend.append(field, val));
+        } else {
+          formDataToSend.append(field, editEvent[field]);
+        }
       }
     });
+    // Append booked_experts as IDs only
+    bookedExpertIds.forEach(id => formDataToSend.append('booked_experts', id));
 
-    // Handle categories separately
-    if (editEvent.category && Array.isArray(editEvent.category)) {
-      editEvent.category.forEach(cat => formDataToSend.append('category', cat));
-    } else if (editEvent.category) {
-      formDataToSend.append('category', editEvent.category);
-    }
-    // Handle urls separately
-    if (editEvent.urls && Array.isArray(editEvent.urls)) {
-      editEvent.urls.filter(Boolean).forEach(url => formDataToSend.append('urls', url));
-    }
-    // Handle booked_experts separately
-    if (editEvent.booked_experts && Array.isArray(editEvent.booked_experts)) {
-      editEvent.booked_experts.forEach(id => formDataToSend.append('booked_experts', id));
-    }
-    // Handle registeredUsers separately
-    if (editEvent.registeredUsers && Array.isArray(editEvent.registeredUsers)) {
-      editEvent.registeredUsers.forEach(id => formDataToSend.append('registeredUsers', id));
-    }
-  
-    // ✅ Add image if selected
     if (editEvent.photo || editEvent.image instanceof File) {
       formDataToSend.append('image', editEvent.photo || editEvent.image);
     }
-  
+
     try {
       const response = await fetch(`${BACKEND_URL}/api/events/${editEvent._id}`, {
         method: 'PUT',
         body: formDataToSend,
       });
-  
+
       if (response.ok) {
         alert('Event updated successfully!');
         setEditEvent(null);
