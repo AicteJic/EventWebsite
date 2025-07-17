@@ -62,7 +62,9 @@ router.post('/', upload.single('image'), async (req, res) => {
           : [req.body.urls]
         : [],
       registrationFormConfig: req.body.registrationFormConfig ? JSON.parse(req.body.registrationFormConfig) : [],
-      type: req.body.type || req.body.eventType || '',
+      type: Array.isArray(req.body.type)
+        ? req.body.type[0]
+        : (req.body.type || req.body.eventType || ''),
     };
 
     const event = new Event(eventData);
@@ -141,7 +143,9 @@ router.put('/:id', upload.single('image'), async (req, res) => {
           ? req.body.urls
           : [req.body.urls]
         : [],
-      type: req.body.type || req.body.eventType || '',
+      type: Array.isArray(req.body.type)
+        ? req.body.type[0]
+        : (req.body.type || req.body.eventType || ''),
     };
 
     const event = await Event.findByIdAndUpdate(req.params.id, updatedData, {
