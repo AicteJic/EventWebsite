@@ -567,8 +567,8 @@ const ManageEvents = () => {
                       type="radio"
                       name="eventType"
                       value="Initiatives and programs by JIC"
-                      checked={editEvent.eventType === 'Initiatives and programs by JIC'}
-                      onChange={e => setEditEvent(prev => ({ ...prev, eventType: e.target.value }))}
+                      checked={editEvent.eventType === 'Initiatives and programs by JIC' || editEvent.type === 'Initiatives and programs by JIC'}
+                      onChange={e => setEditEvent(prev => ({ ...prev, eventType: e.target.value, type: e.target.value }))}
                       required
                       style={{ marginRight: 4, width: 16, height: 16 }}
                     />
@@ -579,8 +579,8 @@ const ManageEvents = () => {
                       type="radio"
                       name="eventType"
                       value="Cluster program"
-                      checked={editEvent.eventType === 'Cluster program'}
-                      onChange={e => setEditEvent(prev => ({ ...prev, eventType: e.target.value }))}
+                      checked={editEvent.eventType === 'Cluster program' || editEvent.type === 'Cluster program'}
+                      onChange={e => setEditEvent(prev => ({ ...prev, eventType: e.target.value, type: e.target.value }))}
                       required
                       style={{ marginRight: 4, width: 16, height: 16 }}
                     />
@@ -591,8 +591,8 @@ const ManageEvents = () => {
                       type="radio"
                       name="eventType"
                       value="Initiatives by MIC and JIC"
-                      checked={editEvent.eventType === 'Initiatives by MIC and JIC'}
-                      onChange={e => setEditEvent(prev => ({ ...prev, eventType: e.target.value }))}
+                      checked={editEvent.eventType === 'Initiatives by MIC and JIC' || editEvent.type === 'Initiatives by MIC and JIC'}
+                      onChange={e => setEditEvent(prev => ({ ...prev, eventType: e.target.value, type: e.target.value }))}
                       required
                       style={{ marginRight: 4, width: 16, height: 16 }}
                     />
