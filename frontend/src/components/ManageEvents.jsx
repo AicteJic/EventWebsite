@@ -18,6 +18,8 @@ const ManageEvents = () => {
   const [infoModal, setInfoModal] = useState({ isOpen: false, registrations: [] });
   const [selectedExpert, setSelectedExpert] = useState(null);
   const [showExpertModal, setShowExpertModal] = useState(false);
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+  const [modalDescription, setModalDescription] = useState('');
   const navigate = useNavigate();
 
   // Available categories
@@ -360,7 +362,9 @@ const ManageEvents = () => {
               </div>
               <div className="event-card-content">
                 <h3>{event.title}</h3>
-                <p><strong>Description:</strong> <span className="event-description-scroll">{event.description}</span></p>
+                <p><strong>Description:</strong> <span className="event-description-scroll" style={{ cursor: 'pointer' }} onClick={() => { setModalDescription(event.description); setShowDescriptionModal(true); }}>
+  {event.description.length > 100 ? event.description.slice(0, 100) + '...' : event.description}
+</span></p>
                 <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
                 <p><strong>Time:</strong> {event.time} - {event.endTime}</p>
                 <p><strong>Location:</strong> {event.location}</p>
@@ -533,13 +537,54 @@ const ManageEvents = () => {
         <div className="edit-modal">
           <div className="edit-modal-content">
             <h3>Edit Event</h3>
-            <form onSubmit={handleEditSubmit}>
+            <form onSubmit={handleEditSubmit} className="create-event-form">
+              <div className="event-type-radio-group" style={{ maxWidth: '320px', marginBottom: '16px' }}>
+                <label style={{ fontWeight: 600, marginBottom: 4, fontSize: '1rem', width: '100%' }}>Event Type:</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2, fontSize: '0.97rem', width: '100%' }}>
+                    <input
+                      type="radio"
+                      name="eventType"
+                      value="Initiatives and programs by JIC"
+                      checked={editEvent.eventType === 'Initiatives and programs by JIC'}
+                      onChange={e => setEditEvent(prev => ({ ...prev, eventType: e.target.value }))}
+                      required
+                      style={{ marginRight: 4, width: 16, height: 16 }}
+                    />
+                    <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Initiatives and programs by JIC</span>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2, fontSize: '0.97rem', width: '100%' }}>
+                    <input
+                      type="radio"
+                      name="eventType"
+                      value="Cluster program"
+                      checked={editEvent.eventType === 'Cluster program'}
+                      onChange={e => setEditEvent(prev => ({ ...prev, eventType: e.target.value }))}
+                      required
+                      style={{ marginRight: 4, width: 16, height: 16 }}
+                    />
+                    <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Cluster program</span>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2, fontSize: '0.97rem', width: '100%' }}>
+                    <input
+                      type="radio"
+                      name="eventType"
+                      value="Initiatives by MIC and JIC"
+                      checked={editEvent.eventType === 'Initiatives by MIC and JIC'}
+                      onChange={e => setEditEvent(prev => ({ ...prev, eventType: e.target.value }))}
+                      required
+                      style={{ marginRight: 4, width: 16, height: 16 }}
+                    />
+                    <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Initiatives by MIC and JIC</span>
+                  </label>
+                </div>
+              </div>
               <label>
                 Title:
                 <input
                   type="text"
                   value={editEvent.title}
-                  onChange={(e) => setEditEvent({ ...editEvent, title: e.target.value })}
+                  onChange={e => setEditEvent({ ...editEvent, title: e.target.value })}
                   required
                 />
               </label>
@@ -547,7 +592,7 @@ const ManageEvents = () => {
                 Description:
                 <textarea
                   value={editEvent.description}
-                  onChange={(e) => setEditEvent({ ...editEvent, description: e.target.value })}
+                  onChange={e => setEditEvent({ ...editEvent, description: e.target.value })}
                   required
                 />
               </label>
@@ -556,7 +601,7 @@ const ManageEvents = () => {
                 <input
                   type="date"
                   value={new Date(editEvent.date).toISOString().split('T')[0]}
-                  onChange={(e) => setEditEvent({ ...editEvent, date: e.target.value })}
+                  onChange={e => setEditEvent({ ...editEvent, date: e.target.value })}
                   required
                 />
               </label>
@@ -565,7 +610,7 @@ const ManageEvents = () => {
                 <input
                   type="time"
                   value={editEvent.time}
-                  onChange={(e) => setEditEvent({ ...editEvent, time: e.target.value })}
+                  onChange={e => setEditEvent({ ...editEvent, time: e.target.value })}
                   required
                 />
               </label>
@@ -574,7 +619,7 @@ const ManageEvents = () => {
                 <input
                   type="time"
                   value={editEvent.endTime}
-                  onChange={(e) => setEditEvent({ ...editEvent, endTime: e.target.value })}
+                  onChange={e => setEditEvent({ ...editEvent, endTime: e.target.value })}
                   required
                 />
               </label>
@@ -583,25 +628,7 @@ const ManageEvents = () => {
                 <input
                   type="text"
                   value={editEvent.location}
-                  onChange={(e) => setEditEvent({ ...editEvent, location: e.target.value })}
-                  required
-                />
-              </label>
-              <label>
-                Category:
-                <input
-                  type="text"
-                  value={editEvent.category}
-                  onChange={(e) => setEditEvent({ ...editEvent, category: e.target.value })}
-                  required
-                />
-              </label>
-              <label>
-                Organizer:
-                <input
-                  type="text"
-                  value={editEvent.organizer}
-                  onChange={(e) => setEditEvent({ ...editEvent, organizer: e.target.value })}
+                  onChange={e => setEditEvent({ ...editEvent, location: e.target.value })}
                   required
                 />
               </label>
@@ -610,7 +637,25 @@ const ManageEvents = () => {
                 <input
                   type="file"
                   name="image"
-                  onChange={(e) => setEditEvent({ ...editEvent, photo: e.target.files[0] })}
+                  onChange={e => setEditEvent({ ...editEvent, photo: e.target.files[0] })}
+                />
+              </label>
+              <label>
+                Available Seats:
+                <input
+                  type="number"
+                  value={editEvent.availableSeats}
+                  onChange={e => setEditEvent({ ...editEvent, availableSeats: e.target.value })}
+                  required
+                />
+              </label>
+              <label>
+                Organizer:
+                <input
+                  type="text"
+                  value={editEvent.organizer}
+                  onChange={e => setEditEvent({ ...editEvent, organizer: e.target.value })}
+                  required
                 />
               </label>
               <label>
@@ -643,6 +688,16 @@ const ManageEvents = () => {
               <button type="submit">Save Changes</button>
               <button type="button" onClick={() => setEditEvent(null)}>Cancel</button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showDescriptionModal && (
+        <div className="description-modal-overlay" onClick={() => setShowDescriptionModal(false)}>
+          <div className="description-modal" onClick={e => e.stopPropagation()}>
+            <h3>Event Description</h3>
+            <div style={{ maxHeight: 300, overflowY: 'auto', whiteSpace: 'pre-line' }}>{modalDescription}</div>
+            <button onClick={() => setShowDescriptionModal(false)} style={{ marginTop: 16 }}>Close</button>
           </div>
         </div>
       )}
