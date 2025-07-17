@@ -497,7 +497,9 @@ const Marketplace = () => {
               </div>
               <div className="event-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <h3 className="event-title">{event.title}</h3>
-                <p className="event-description-scroll" onClick={() => { setModalDescription(event.description); setShowDescriptionModal(true); }} style={{ cursor: 'pointer' }}>{event.description}</p>
+                <p className="event-description-scroll" onClick={() => { setModalDescription(event.description); setShowDescriptionModal(true); }} style={{ cursor: 'pointer', maxHeight: 80, overflowY: 'auto', marginBottom: 8 }}>
+                  {event.description}
+                </p>
                 <div className="event-details">
                   <div className="event-date">
                     <span className="icon">📅</span>
