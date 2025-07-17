@@ -384,15 +384,11 @@ const ManageEvents = () => {
         {events.map((event) => {
           console.log(`Event "${event.title}" booked_experts:`, event.booked_experts); // Debug each event's booked experts
           return (
-            <div key={event._id} className="event-card">
-              <div className="event-image">
-                <img
-                  src={event.image ? `${event.image}` : `${fallBackImage}`}
-                  alt="evenet"
-                  className="event-image"
-                />
+            <div key={event._id} className="event-card" style={{ display: 'flex', flexDirection: 'row', minHeight: 220 }}>
+              <div className="event-image" style={{ width: 220, minWidth: 180, height: 180, margin: 18, borderRadius: 12, overflow: 'hidden', background: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src={event.image ? event.image : fallBackImage} alt={event.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
               </div>
-              <div className="event-card-content">
+              <div className="event-card-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <h3>{event.title}</h3>
                 <p><strong>Description:</strong> <span className="event-description-scroll" style={{ cursor: 'pointer' }} onClick={() => { setModalDescription(event.description); setShowDescriptionModal(true); }}>
   {event.description.length > 100 ? event.description.slice(0, 100) + '...' : event.description}
