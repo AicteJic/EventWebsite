@@ -77,6 +77,10 @@ const userSchema = new mongoose.Schema({
     enum: ['ip_consultancy', 'company_registration', 'mentoring', 'expert_guidance'],
     required: [false, 'Please provide a domain']
   },
+  iicId: {
+    type: String,
+    required: false
+  },
   events: [
     {
       type: mongoose.Schema.Types.ObjectId,

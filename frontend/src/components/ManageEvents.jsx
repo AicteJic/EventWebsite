@@ -378,72 +378,74 @@ const ManageEvents = () => {
           console.log(`Event "${event.title}" booked_experts:`, event.booked_experts); // Debug each event's booked experts
           return (
             <div key={event._id} className="event-card" style={{ display: 'flex', flexDirection: 'row', minHeight: 220 }}>
-              <div className="event-image" style={{ width: 220, minWidth: 180, height: 180, margin: 18, borderRadius: 12, overflow: 'hidden', background: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="event-image" style={{ width: 220, minWidth: 180, height: 180, margin: 18, borderRadius: 12, overflow: 'hidden', background: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <img src={event.image ? event.image : fallBackImage} alt={event.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
               </div>
-              <div className="event-card-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <h3>{event.title}</h3>
-                <p><strong>Description:</strong> <span className="event-description-scroll" style={{ cursor: 'pointer' }} onClick={() => { setModalDescription(event.description); setShowDescriptionModal(true); }}>
-  {event.description.length > 100 ? event.description.slice(0, 100) + '...' : event.description}
-</span></p>
-              <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
-              <p><strong>Time:</strong> {event.time} - {event.endTime}</p>
-              <p><strong>Location:</strong> {event.location}</p>
-              <p><strong>Category:</strong> {formatCategoryName(event.category)}</p>
-              <p><strong>Organizer:</strong> {event.organizer}</p>
-              <p><strong>Available Seats:</strong> {event.availableSeats}</p>
-              {/* Show resource URLs if present */}
-              {event.urls && event.urls.length > 0 && (
-                <div className="event-urls">
-                  <strong>Resources:</strong>
-                  <ul style={{ margin: '6px 0 0 0', padding: 0, listStyle: 'none' }}>
-                    {event.urls.map((url, idx) => (
-                      <li key={idx} style={{ marginBottom: 4 }}>
-                        <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: '#667eea', textDecoration: 'underline', wordBreak: 'break-all' }}>
-                          {`Link${idx + 1}`}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div style={{ overflowY: 'auto', maxHeight: 180, paddingRight: 8 }}>
+                  <h3>{event.title}</h3>
+                  <p><strong>Description:</strong> <span className="event-description-scroll" style={{ cursor: 'pointer' }} onClick={() => { setModalDescription(event.description); setShowDescriptionModal(true); }}>
+                    {event.description.length > 100 ? event.description.slice(0, 100) + '...' : event.description}
+                  </span></p>
+                  <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+                  <p><strong>Time:</strong> {event.time} - {event.endTime}</p>
+                  <p><strong>Location:</strong> {event.location}</p>
+                  <p><strong>Category:</strong> {formatCategoryName(event.category)}</p>
+                  <p><strong>Organizer:</strong> {event.organizer}</p>
+                  <p><strong>Available Seats:</strong> {event.availableSeats}</p>
+                  {/* Show resource URLs if present */}
+                  {event.urls && event.urls.length > 0 && (
+                    <div className="event-urls">
+                      <strong>Resources:</strong>
+                      <ul style={{ margin: '6px 0 0 0', padding: 0, listStyle: 'none' }}>
+                        {event.urls.map((url, idx) => (
+                          <li key={idx} style={{ marginBottom: 4 }}>
+                            <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: '#667eea', textDecoration: 'underline', wordBreak: 'break-all' }}>
+                              {`Link${idx + 1}`}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {/* Display Booked Experts */}
+                  {event.booked_experts && event.booked_experts.length > 0 && (
+                    <div className="booked-experts-section">
+                      <p><strong>Experts:</strong></p>
+                      <div className="booked-experts-row">
+                        {event.booked_experts.map((expert, idx) => (
+                          <span key={expert._id || idx} className="expert-avatar-wrapper">
+                            <img
+                              src={expert.photo || elonMuskImage}
+                              alt={expert.name}
+                              className="expert-avatar"
+                              onClick={() => handleViewExpert(expert)}
+                              style={{ cursor: 'pointer', width: 36, height: 36, borderRadius: '50%', margin: '0 6px', border: '2px solid #a084e8' }}
+                            />
+                            <span className="expert-name">{expert.name}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-              {/* Display Booked Experts */}
-              {event.booked_experts && event.booked_experts.length > 0 && (
-                <div className="booked-experts-section">
-                  <p><strong>Experts:</strong></p>
-                  <div className="booked-experts-row">
-                    {event.booked_experts.map((expert, idx) => (
-                      <span key={expert._id || idx} className="expert-avatar-wrapper">
-                        <img
-                          src={expert.photo || elonMuskImage}
-                          alt={expert.name}
-                          className="expert-avatar"
-                          onClick={() => handleViewExpert(expert)}
-                          style={{ cursor: 'pointer', width: 36, height: 36, borderRadius: '50%', margin: '0 6px', border: '2px solid #a084e8' }}
-                        />
-                        <span className="expert-name">{expert.name}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div className="event-actions">
-                <button onClick={() => handleEdit(event)}>Edit</button>
-                <button onClick={() => fetchEventRegistrations(event._id)}>Registrations</button>
-                <button
-                  onClick={async () => {
-                    // Always fetch latest registrations before exporting
-                    const response = await fetch(`${BACKEND_URL}/api/events/${event._id}/registrations`);
-                    let registrations = [];
-                    if (response.ok) {
-                      registrations = await response.json();
-                    }
-                    exportToPDF(event, registrations);
-                  }}
-                >
-                  Export PDF
-                </button>
-                <button onClick={() => handleDelete(event._id)}>Delete</button>
+                <div className="event-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 8 }}>
+                  <button onClick={() => handleEdit(event)}>Edit</button>
+                  <button onClick={() => fetchEventRegistrations(event._id)}>Registrations</button>
+                  <button
+                    onClick={async () => {
+                      // Always fetch latest registrations before exporting
+                      const response = await fetch(`${BACKEND_URL}/api/events/${event._id}/registrations`);
+                      let registrations = [];
+                      if (response.ok) {
+                        registrations = await response.json();
+                      }
+                      exportToPDF(event, registrations);
+                    }}
+                  >
+                    Export PDF
+                  </button>
+                  <button onClick={() => handleDelete(event._id)}>Delete</button>
                 </div>
               </div>
             </div>
@@ -505,6 +507,7 @@ const ManageEvents = () => {
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone Number</th>
+                    <th>IIC ID</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -512,7 +515,8 @@ const ManageEvents = () => {
                     <tr key={index}>
                       <td>{registration.name}</td>
                       <td>{registration.email}</td>
-                      <td>{registration.phoneNumber || 'N/A'}</td>
+                      <td>{registration.phoneNumber || registration.mobile || 'N/A'}</td>
+                      <td>{registration.iicId || 'N/A'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -854,6 +858,7 @@ const ManageEvents = () => {
               <th>Name</th>
               <th>Email</th>
               <th>Phone Number</th>
+              <th>IIC ID</th>
             </tr>
           </thead>
           <tbody>
@@ -861,7 +866,8 @@ const ManageEvents = () => {
               <tr key={registration.email}>
                 <td>{registration.name}</td>
                 <td>{registration.email}</td>
-                <td>{registration.phoneNumber}</td>
+                <td>{registration.phoneNumber || registration.mobile || 'N/A'}</td>
+                <td>{registration.iicId || 'N/A'}</td>
               </tr>
             ))}
           </tbody>

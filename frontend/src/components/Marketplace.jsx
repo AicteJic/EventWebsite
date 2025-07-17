@@ -298,6 +298,33 @@ const Marketplace = () => {
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
   const [modalDescription, setModalDescription] = useState('');
 
+  // Helper function to get event status
+  const getEventStatus = (event) => {
+    const now = new Date();
+    const eventDate = new Date(event.date);
+    // If event has endTime, use it for more accurate status
+    let eventStart = new Date(event.date);
+    let eventEnd = new Date(event.date);
+
+    // Parse time and endTime if present
+    if (event.time) {
+      const [startHour, startMinute] = event.time.split(":");
+      eventStart.setHours(Number(startHour), Number(startMinute || 0), 0, 0);
+    }
+    if (event.endTime) {
+      const [endHour, endMinute] = event.endTime.split(":");
+      eventEnd.setHours(Number(endHour), Number(endMinute || 0), 0, 0);
+    } else {
+      // If no endTime, assume event lasts 1 hour
+      eventEnd = new Date(eventStart.getTime() + 60 * 60 * 1000);
+    }
+
+    if (now < eventStart) return "Upcoming";
+    if (now >= eventStart && now <= eventEnd) return "Ongoing";
+    if (now > eventEnd) return "Completed";
+    return "";
+  };
+
   return (
     <div className="marketplace-container" onClick={() => {}}>
       {/* Confirmation Modal */}
@@ -493,6 +520,32 @@ const Marketplace = () => {
           {filteredEvents.map(event => (
             <div key={event._id} className="event-card" style={{ display: 'flex', flexDirection: 'row', minHeight: 220 }}>
               <div className="event-image" style={{ width: 220, minWidth: 180, height: 180, margin: 18, borderRadius: 12, overflow: 'hidden', background: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                {/* Status badge */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                    background: '#fff',
+                    color:
+                      getEventStatus(event) === 'Ongoing'
+                        ? '#28a745'
+                        : getEventStatus(event) === 'Upcoming'
+                        ? '#ffc107'
+                        : '#e51b00',
+                    border: '2px solid #282769',
+                    padding: '4px 12px',
+                    borderRadius: 8,
+                    fontWeight: 700,
+                    fontSize: 13,
+                    zIndex: 3,
+                    textTransform: 'uppercase',
+                    boxShadow: '0 2px 8px rgba(40,39,105,0.08)',
+                  }}
+                >
+                  {getEventStatus(event)}
+                </div>
+                {/* Existing event type badge */}
                 {event.type && (
                   <div className="event-type-badge" style={{ position: 'absolute', top: 8, left: 8, background: '#282769', color: '#fff', padding: '4px 12px', borderRadius: 8, fontWeight: 600, fontSize: 13, zIndex: 2 }}>
                     {event.type}
