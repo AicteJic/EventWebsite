@@ -335,6 +335,38 @@ const ManageEvents = () => {
 
   const closeInfoModal = () => setInfoModal({ isOpen: false, registrations: [] });
 
+  const [editOtherCategory, setEditOtherCategory] = useState('');
+  const [editCustomCategory, setEditCustomCategory] = useState('');
+  const [editContainsExperts, setEditContainsExperts] = useState(false);
+  const [editExpertSearch, setEditExpertSearch] = useState('');
+  const [editDomainExperts, setEditDomainExperts] = useState([]);
+  const [editFilteredExperts, setEditFilteredExperts] = useState([]);
+  const [editLoadingExperts, setEditLoadingExperts] = useState(false);
+
+  // Fetch domain experts for edit modal
+  useEffect(() => {
+    if (editEvent) {
+      setEditLoadingExperts(true);
+      fetch(`${BACKEND_URL}/api/user/domain-experts`).then(res => res.json()).then(experts => {
+        setEditDomainExperts(experts);
+        setEditLoadingExperts(false);
+      }).catch(() => setEditLoadingExperts(false));
+    }
+  }, [editEvent]);
+
+  // Filter experts for edit modal
+  useEffect(() => {
+    if (!editEvent || !editEvent.category || editEvent.category.length === 0) {
+      setEditFilteredExperts(editDomainExperts);
+    } else {
+      setEditFilteredExperts(
+        editDomainExperts.filter(expert =>
+          expert.Domain && editEvent.category.some(cat => cat.toLowerCase() === expert.Domain.toLowerCase())
+        )
+      );
+    }
+  }, [editDomainExperts, editEvent, editCustomCategory]);
+
   return (
     <div className="manage-events-container">
       <h2>Manage Events</h2>
@@ -685,6 +717,121 @@ const ManageEvents = () => {
                 ))}
                 <button type="button" onClick={() => setEditEvent({ ...editEvent, urls: [...(editEvent.urls || []), ''] })} style={{ marginTop: 4, background: '#eee', border: '1px solid #ccc', borderRadius: 4, padding: '4px 10px', cursor: 'pointer' }}>Add URL</button>
               </label>
+              <div className="contains-experts-checkbox">
+                <input
+                  type="checkbox"
+                  id="editContainsExperts"
+                  checked={editContainsExperts}
+                  onChange={e => setEditContainsExperts(e.target.checked)}
+                />
+                <label htmlFor="editContainsExperts">Does this event contain experts?</label>
+              </div>
+              <div>
+                <label>
+                  Categories (Select all that apply):
+                  <div className="category-checkboxes">
+                    {availableCategories.map(category => (
+                      <div key={category.value} className="category-checkbox">
+                        <input
+                          type="checkbox"
+                          id={`edit-${category.value}`}
+                          checked={editEvent.category.includes(category.value)}
+                          onChange={() => handleCategoryChange(category.value)}
+                        />
+                        <label htmlFor={`edit-${category.value}`}>{category.label}</label>
+                      </div>
+                    ))}
+                    <div className="category-checkbox">
+                      <input
+                        type="checkbox"
+                        id="edit-other-category"
+                        checked={!!editOtherCategory || !!editCustomCategory}
+                        onChange={e => {
+                          if (!e.target.checked) {
+                            setEditOtherCategory('');
+                            setEditCustomCategory('');
+                            setEditEvent(prev => ({ ...prev, category: prev.category.filter(cat => cat !== editOtherCategory && cat !== editCustomCategory) }));
+                          } else {
+                            setEditOtherCategory(' ');
+                          }
+                        }}
+                      />
+                      <label htmlFor="edit-other-category">Others</label>
+                      {(!!editOtherCategory || !!editCustomCategory) && (
+                        <input
+                          type="text"
+                          placeholder="Enter custom category"
+                          value={editCustomCategory}
+                          onChange={e => {
+                            const value = e.target.value;
+                            setEditCustomCategory(value);
+                            setEditOtherCategory(value);
+                            setEditEvent(prev => {
+                              let newCategories = prev.category.filter(cat => !availableCategories.some(c => c.value === cat));
+                              if (value && !newCategories.includes(value)) {
+                                newCategories = [...prev.category.filter(cat => availableCategories.some(c => c.value === cat)), value];
+                              } else if (!value) {
+                                newCategories = prev.category.filter(cat => availableCategories.some(c => c.value === cat));
+                              }
+                              return { ...prev, category: newCategories };
+                            });
+                          }}
+                          style={{ marginLeft: 8 }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </label>
+              </div>
+              {editContainsExperts && (
+                <label>
+                  Select Domain Experts:
+                  <input
+                    type="text"
+                    placeholder="Search experts by name or email..."
+                    value={editExpertSearch}
+                    onChange={e => setEditExpertSearch(e.target.value)}
+                    style={{ margin: '10px 0', padding: '8px', width: '100%', borderRadius: '6px', border: '1px solid #ccc' }}
+                  />
+                  {editLoadingExperts ? (
+                    <span>Loading experts...</span>
+                  ) : (
+                    <div className="experts-checkboxes">
+                      {editFilteredExperts.filter(expert =>
+                        expert.name.toLowerCase().includes(editExpertSearch.toLowerCase()) ||
+                        expert.email.toLowerCase().includes(editExpertSearch.toLowerCase())
+                      ).length === 0 ? (
+                        <span className="no-experts">No available experts for this category/time</span>
+                      ) : (
+                        editFilteredExperts.filter(expert =>
+                          expert.name.toLowerCase().includes(editExpertSearch.toLowerCase()) ||
+                          expert.email.toLowerCase().includes(editExpertSearch.toLowerCase())
+                        ).map(expert => (
+                          <div key={expert._id} className="expert-checkbox">
+                            <input
+                              type="checkbox"
+                              id={`edit-expert-${expert._id}`}
+                              checked={editEvent.booked_experts.includes(expert._id)}
+                              onChange={() => {
+                                const updatedExperts = editEvent.booked_experts.includes(expert._id)
+                                  ? editEvent.booked_experts.filter(id => id !== expert._id)
+                                  : [...editEvent.booked_experts, expert._id];
+                                setEditEvent(prev => ({ ...prev, booked_experts: updatedExperts }));
+                              }}
+                            />
+                            <label htmlFor={`edit-expert-${expert._id}`}>
+                              <div className="expert-info">
+                                <span className="expert-name">{expert.name}</span>
+                                <span className="expert-email">({expert.email})</span>
+                              </div>
+                            </label>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </label>
+              )}
               <button type="submit">Save Changes</button>
               <button type="button" onClick={() => setEditEvent(null)}>Cancel</button>
             </form>

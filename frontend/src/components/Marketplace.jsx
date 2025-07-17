@@ -491,12 +491,11 @@ const Marketplace = () => {
       <div className="market-content">
         <div className="events-grid">
           {filteredEvents.map(event => (
-            <div key={event._id} className="event-card">
-              <div className="event-image">
-                <img src={event.image ? `${event.image}`:`${fallBackImage}`} alt={event.title} />
-                <div className="event-category">{formatCategoryName(event.category)}</div>
+            <div key={event._id} className="event-card" style={{ display: 'flex', flexDirection: 'row', minHeight: 220 }}>
+              <div className="event-image" style={{ width: 220, minWidth: 180, height: 180, margin: 18, borderRadius: 12, overflow: 'hidden', background: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src={event.image ? event.image : fallBackImage} alt={event.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
               </div>
-              <div className="event-content">
+              <div className="event-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <h3 className="event-title">{event.title}</h3>
                 <p className="event-description-scroll" onClick={() => { setModalDescription(event.description); setShowDescriptionModal(true); }} style={{ cursor: 'pointer' }}>{event.description}</p>
                 <div className="event-details">
