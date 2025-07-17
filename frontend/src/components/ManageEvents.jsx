@@ -105,12 +105,12 @@ const ManageEvents = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Always use only IDs for booked_experts
     const bookedExpertIds = (editEvent.booked_experts || []).map(expert =>
       typeof expert === 'object' && expert._id ? expert._id : expert
     );
-
+  
     const formDataToSend = new FormData();
     const allowedFields = [
       'title',
@@ -126,7 +126,7 @@ const ManageEvents = () => {
       // 'booked_experts', // handled below
       'registeredUsers',
     ];
-
+  
     allowedFields.forEach((field) => {
       if (editEvent[field] !== undefined && editEvent[field] !== null) {
         if (field === 'category' && Array.isArray(editEvent[field])) {
@@ -136,7 +136,7 @@ const ManageEvents = () => {
         } else if (Array.isArray(editEvent[field])) {
           editEvent[field].forEach(val => formDataToSend.append(field, val));
         } else {
-          formDataToSend.append(field, editEvent[field]);
+        formDataToSend.append(field, editEvent[field]);
         }
       }
     });
@@ -146,13 +146,13 @@ const ManageEvents = () => {
     if (editEvent.photo || editEvent.image instanceof File) {
       formDataToSend.append('image', editEvent.photo || editEvent.image);
     }
-
+  
     try {
       const response = await fetch(`${BACKEND_URL}/api/events/${editEvent._id}`, {
         method: 'PUT',
         body: formDataToSend,
       });
-
+  
       if (response.ok) {
         alert('Event updated successfully!');
         setEditEvent(null);
@@ -382,68 +382,68 @@ const ManageEvents = () => {
                 <img src={event.image ? event.image : fallBackImage} alt={event.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
               </div>
               <div className="event-card-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <h3>{event.title}</h3>
+              <h3>{event.title}</h3>
                 <p><strong>Description:</strong> <span className="event-description-scroll" style={{ cursor: 'pointer' }} onClick={() => { setModalDescription(event.description); setShowDescriptionModal(true); }}>
   {event.description.length > 100 ? event.description.slice(0, 100) + '...' : event.description}
 </span></p>
-                <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
-                <p><strong>Time:</strong> {event.time} - {event.endTime}</p>
-                <p><strong>Location:</strong> {event.location}</p>
-                <p><strong>Category:</strong> {formatCategoryName(event.category)}</p>
-                <p><strong>Organizer:</strong> {event.organizer}</p>
-                <p><strong>Available Seats:</strong> {event.availableSeats}</p>
-                {/* Show resource URLs if present */}
-                {event.urls && event.urls.length > 0 && (
-                  <div className="event-urls">
-                    <strong>Resources:</strong>
-                    <ul style={{ margin: '6px 0 0 0', padding: 0, listStyle: 'none' }}>
-                      {event.urls.map((url, idx) => (
-                        <li key={idx} style={{ marginBottom: 4 }}>
-                          <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: '#667eea', textDecoration: 'underline', wordBreak: 'break-all' }}>
-                            {`Link${idx + 1}`}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+              <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+              <p><strong>Time:</strong> {event.time} - {event.endTime}</p>
+              <p><strong>Location:</strong> {event.location}</p>
+              <p><strong>Category:</strong> {formatCategoryName(event.category)}</p>
+              <p><strong>Organizer:</strong> {event.organizer}</p>
+              <p><strong>Available Seats:</strong> {event.availableSeats}</p>
+              {/* Show resource URLs if present */}
+              {event.urls && event.urls.length > 0 && (
+                <div className="event-urls">
+                  <strong>Resources:</strong>
+                  <ul style={{ margin: '6px 0 0 0', padding: 0, listStyle: 'none' }}>
+                    {event.urls.map((url, idx) => (
+                      <li key={idx} style={{ marginBottom: 4 }}>
+                        <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: '#667eea', textDecoration: 'underline', wordBreak: 'break-all' }}>
+                          {`Link${idx + 1}`}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {/* Display Booked Experts */}
+              {event.booked_experts && event.booked_experts.length > 0 && (
+                <div className="booked-experts-section">
+                  <p><strong>Experts:</strong></p>
+                  <div className="booked-experts-row">
+                    {event.booked_experts.map((expert, idx) => (
+                      <span key={expert._id || idx} className="expert-avatar-wrapper">
+                        <img
+                          src={expert.photo || elonMuskImage}
+                          alt={expert.name}
+                          className="expert-avatar"
+                          onClick={() => handleViewExpert(expert)}
+                          style={{ cursor: 'pointer', width: 36, height: 36, borderRadius: '50%', margin: '0 6px', border: '2px solid #a084e8' }}
+                        />
+                        <span className="expert-name">{expert.name}</span>
+                      </span>
+                    ))}
                   </div>
-                )}
-                {/* Display Booked Experts */}
-                {event.booked_experts && event.booked_experts.length > 0 && (
-                  <div className="booked-experts-section">
-                    <p><strong>Experts:</strong></p>
-                    <div className="booked-experts-row">
-                      {event.booked_experts.map((expert, idx) => (
-                        <span key={expert._id || idx} className="expert-avatar-wrapper">
-                          <img
-                            src={expert.photo || elonMuskImage}
-                            alt={expert.name}
-                            className="expert-avatar"
-                            onClick={() => handleViewExpert(expert)}
-                            style={{ cursor: 'pointer', width: 36, height: 36, borderRadius: '50%', margin: '0 6px', border: '2px solid #a084e8' }}
-                          />
-                          <span className="expert-name">{expert.name}</span>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div className="event-actions">
-                  <button onClick={() => handleEdit(event)}>Edit</button>
-                  <button onClick={() => fetchEventRegistrations(event._id)}>Registrations</button>
-                  <button
-                    onClick={async () => {
-                      // Always fetch latest registrations before exporting
-                      const response = await fetch(`${BACKEND_URL}/api/events/${event._id}/registrations`);
-                      let registrations = [];
-                      if (response.ok) {
-                        registrations = await response.json();
-                      }
-                      exportToPDF(event, registrations);
-                    }}
-                  >
-                    Export PDF
-                  </button>
-                  <button onClick={() => handleDelete(event._id)}>Delete</button>
+                </div>
+              )}
+              <div className="event-actions">
+                <button onClick={() => handleEdit(event)}>Edit</button>
+                <button onClick={() => fetchEventRegistrations(event._id)}>Registrations</button>
+                <button
+                  onClick={async () => {
+                    // Always fetch latest registrations before exporting
+                    const response = await fetch(`${BACKEND_URL}/api/events/${event._id}/registrations`);
+                    let registrations = [];
+                    if (response.ok) {
+                      registrations = await response.json();
+                    }
+                    exportToPDF(event, registrations);
+                  }}
+                >
+                  Export PDF
+                </button>
+                <button onClick={() => handleDelete(event._id)}>Delete</button>
                 </div>
               </div>
             </div>
@@ -469,11 +469,11 @@ const ManageEvents = () => {
               <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
                 <button
                   style={{ background: '#667eea', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 16px', fontWeight: 600, cursor: 'pointer' }}
-                  onClick={() => {
-                    const event = events.find(e => e._id === infoModal.eventId);
-                    exportToPDF(event, infoModal.registrations);
-                  }}
-                >
+                onClick={() => {
+                  const event = events.find(e => e._id === infoModal.eventId);
+                  exportToPDF(event, infoModal.registrations);
+                }}
+              >
                   Export as PDF
                 </button>
                 <button
