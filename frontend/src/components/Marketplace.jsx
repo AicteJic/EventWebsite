@@ -25,6 +25,7 @@ const Marketplace = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEventType, setSelectedEventType] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   // Remove filter state and logic
   // const [filter, setFilter] = useState('all');
   // const [isFilterVisible, setIsFilterVisible] = useState(false);
@@ -237,7 +238,8 @@ const Marketplace = () => {
     const matchesEventType = selectedEventType === 'all' || (event.type === selectedEventType);
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesEventType && matchesSearch;
+    const matchesStatus = selectedStatus === 'all' || getEventStatus(event) === selectedStatus;
+    return matchesCategory && matchesEventType && matchesSearch && matchesStatus;
   });
 
   const categories = [
@@ -499,6 +501,33 @@ const Marketplace = () => {
             onClick={() => setSelectedEventType('Initiatives by MIC and JIC')}
           >
             Initiatives by MIC & JIC
+          </button>
+        </div>
+        {/* Status filters */}
+        <div className="status-filters" style={{ marginBottom: 12, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button
+            className={`event-type-btn ${selectedStatus === 'all' ? 'active' : ''}`}
+            onClick={() => setSelectedStatus('all')}
+          >
+            All Statuses
+          </button>
+          <button
+            className={`event-type-btn ${selectedStatus === 'Upcoming' ? 'active' : ''}`}
+            onClick={() => setSelectedStatus('Upcoming')}
+          >
+            Upcoming
+          </button>
+          <button
+            className={`event-type-btn ${selectedStatus === 'Ongoing' ? 'active' : ''}`}
+            onClick={() => setSelectedStatus('Ongoing')}
+          >
+            Ongoing
+          </button>
+          <button
+            className={`event-type-btn ${selectedStatus === 'Completed' ? 'active' : ''}`}
+            onClick={() => setSelectedStatus('Completed')}
+          >
+            Completed
           </button>
         </div>
         {/*
