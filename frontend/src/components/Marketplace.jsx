@@ -477,7 +477,7 @@ const Marketplace = () => {
             className="search-input"
           />
         </div>
-        <div className="event-type-filters" style={{ marginBottom: 12, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <div className="event-type-filters" style={{ marginBottom: 12, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
           <button
             className={`event-type-btn ${selectedEventType === 'all' ? 'active' : ''}`}
             onClick={() => setSelectedEventType('all')}
@@ -504,7 +504,7 @@ const Marketplace = () => {
           </button>
         </div>
         {/* Status filters */}
-        <div className="status-filters" style={{ marginBottom: 12, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <div className="status-filters" style={{ marginBottom: 12, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
           <button
             className={`event-type-btn ${selectedStatus === 'all' ? 'active' : ''}`}
             onClick={() => setSelectedStatus('all')}
