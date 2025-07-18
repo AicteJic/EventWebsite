@@ -16,6 +16,7 @@ import ConfirmationBox from './ConfirmationBox';
 // import event1 from '../images/event1.png';
 import fallBackImage from '../images/Image-not-found.png';
 import Modal from 'react-modal';
+import FacultyDeImage from '../images/Faculty_De.png';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/';
 
 const Marketplace = () => {
@@ -30,7 +31,7 @@ const Marketplace = () => {
   const navigate = useNavigate();
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const eventImages = [event1, event2, event3];
+  const eventImages = [event1, event2, event3, FacultyDeImage];
   // AICTE Events data
   const sampleEvents = [
     // {
