@@ -1506,7 +1506,7 @@
 }
 
 .cancel-btn {
-  background: #6c757d;
+  background: #dc3545;
   color: white;
   border: none;
   padding: 12px 25px;
@@ -1518,9 +1518,9 @@
 }
 
 .cancel-btn:hover {
-  background: #5a6268;
+  background: #c82333;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
 }
 
 .add-expert-btn {

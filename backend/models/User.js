@@ -63,10 +63,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  dateOfBirth: {
-    type: Date,
-    required: false
-  },
+  description: { type: String, required: false },
+  dateOfBirth: { type: Date, required: false },
   linkedinProfile: {
     type: String,
     required: false,
