@@ -14,7 +14,7 @@ import './Marketplace.css';
 import filterLogo from '../assets/filter_logo.jpg';
 import ConfirmationBox from './ConfirmationBox';
 // import event1 from '../images/event1.png';
-// import fallBackImage from '../images/Image-not-found.png';
+import fallBackImage from '../images/Image-not-found.png';
 import Modal from 'react-modal';
 import FacultyDeImage from '../images/Faculty_De.png';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/';
