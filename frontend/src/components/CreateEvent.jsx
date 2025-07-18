@@ -187,7 +187,10 @@ const CreateEvent = () => {
     formDataToSend.append('registrationFormConfig', JSON.stringify(registrationFormConfig));
 
     // Always send eventType
-    formDataToSend.append('eventType', formData.eventType || '');
+    // formDataToSend.append('eventType', formData.eventType || '');
+
+    // Always send 'type' as a string for backend compatibility
+    formDataToSend.set('type', formData.eventType || '');
 
     // Debugging: Log all appended values
     for (let pair of formDataToSend.entries()) {
