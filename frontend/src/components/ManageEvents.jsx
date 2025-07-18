@@ -125,6 +125,7 @@ const ManageEvents = () => {
       'category',
       // 'booked_experts', // handled below
       'registeredUsers',
+      'type',
     ];
   
     allowedFields.forEach((field) => {
@@ -142,6 +143,10 @@ const ManageEvents = () => {
     });
     // Append booked_experts as IDs only
     bookedExpertIds.forEach(id => formDataToSend.append('booked_experts', id));
+
+    // Ensure only a string is sent for type
+    const eventTypeString = editEvent.eventType || editEvent.type || '';
+    formDataToSend.set('type', eventTypeString);
 
     if (editEvent.photo || editEvent.image instanceof File) {
       formDataToSend.append('image', editEvent.photo || editEvent.image);
