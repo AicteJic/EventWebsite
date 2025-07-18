@@ -16,7 +16,7 @@ import ConfirmationBox from './ConfirmationBox';
 // import event1 from '../images/event1.png';
 import fallBackImage from '../images/Image-not-found.png';
 import Modal from 'react-modal';
-import FacultyDeImage from '../images/Faculty_De.png';
+import FacultyDeImage from '../images/Limited_Seats_Register.png';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/';
 
 const Marketplace = () => {
